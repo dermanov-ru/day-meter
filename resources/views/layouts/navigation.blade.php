@@ -18,6 +18,9 @@
                     <x-nav-link :href="route('today')" :active="request()->routeIs('today')">
                         {{ __('Today') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('entry.show')" :active="request()->routeIs('entry.*')">
+                        {{ __('Entry') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -75,6 +78,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('today')" :active="request()->routeIs('today')">
                 {{ __('Today') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('entry.show')" :active="request()->routeIs('entry.*')">
+                {{ __('Entry') }}
             </x-responsive-nav-link>
         </div>
 
