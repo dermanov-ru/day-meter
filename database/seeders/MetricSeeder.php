@@ -56,5 +56,13 @@ class MetricSeeder extends Seeder
             'is_active' => true,
             'sort_order' => 5,
         ]);
+
+        Metric::create([
+            'key' => 'worked_at_night',
+            'title' => 'Работал ночью',
+            'type' => 'boolean',
+            'is_active' => true,
+            'sort_order' => 6,
+        ]);
     }
 }
