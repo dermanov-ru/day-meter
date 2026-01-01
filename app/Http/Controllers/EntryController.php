@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DayEntry;
 use App\Models\Metric;
 use App\Models\MetricValue;
+use App\Services\LogicalDateService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -14,13 +15,13 @@ class EntryController extends Controller
     /**
      * Show the entry form for a specific date.
      */
-    public function show(Request $request, ?string $date = null)
+    public function show(Request $request, LogicalDateService $logicalDateService, ?string $date = null)
     {
         $user = Auth::user();
         
-        // Use today if no date provided
+        // Use logical date if no date provided
         if ($date === null) {
-            $date = today()->toDateString();
+            $date = $logicalDateService->getLogicalDateString();
         } else {
             // Validate date format
             try {
@@ -59,10 +60,10 @@ class EntryController extends Controller
     /**
      * Store the entry data.
      */
-    public function store(Request $request)
+    public function store(Request $request, LogicalDateService $logicalDateService)
     {
         $user = Auth::user();
-        $date = $request->input('date', today()->toDateString());
+        $date = $request->input('date', $logicalDateService->getLogicalDateString());
 
         // Validate date format
         try {
