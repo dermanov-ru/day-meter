@@ -1,0 +1,33 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('metric_values', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('day_entry_id')->constrained()->onDelete('cascade');
+            $table->foreignId('metric_id')->constrained()->onDelete('cascade');
+            $table->boolean('value_bool')->nullable();
+            $table->integer('value_int')->nullable();
+            $table->timestamps();
+
+            $table->unique(['day_entry_id', 'metric_id']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('metric_values');
+    }
+};
