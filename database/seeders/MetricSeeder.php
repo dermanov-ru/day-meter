@@ -40,5 +40,21 @@ class MetricSeeder extends Seeder
             'is_active' => true,
             'sort_order' => 3,
         ]);
+
+        Metric::create([
+            'key' => 'walked_with_kids',
+            'title' => 'Гулял с детьми',
+            'type' => 'boolean',
+            'is_active' => true,
+            'sort_order' => 4,
+        ]);
+
+        Metric::create([
+            'key' => 'read_to_kids',
+            'title' => 'Читал детям',
+            'type' => 'boolean',
+            'is_active' => true,
+            'sort_order' => 5,
+        ]);
     }
 }
