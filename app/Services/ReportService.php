@@ -193,4 +193,63 @@ class ReportService
             ->where('metric_id', $metric->id)
             ->count();
     }
+
+    /**
+     * Get chart data for monthly visualization.
+     */
+    public function getMonthlyChartData(User $user, Carbon $month): array
+    {
+        // Get the first and last day of the month
+        $startDate = $month->copy()->startOfMonth();
+        $endDate = $month->copy()->endOfMonth();
+
+        // Generate array of days in the month
+        $days = [];
+        $current = $startDate->copy();
+        while ($current->lte($endDate)) {
+            $days[] = $current->toDateString();
+            $current->addDay();
+        }
+
+        // Load user's day entries for the month with metric values
+        $dayEntries = DayEntry::where('user_id', $user->id)
+            ->whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
+            ->with('values.metric')
+            ->get();
+
+        // Create a map of date => values for quick lookup
+        $valuesByDate = [];
+        foreach ($dayEntries as $dayEntry) {
+            $valuesByDate[$dayEntry->date] = $dayEntry->values;
+        }
+
+        // Get all active metrics
+        $metrics = Metric::active()->ordered()->get();
+        $chartData = [];
+
+        foreach ($metrics as $metric) {
+            $data = [
+                'metric' => $metric,
+                'type' => $metric->type,
+                'labels' => $days,
+                'values' => [],
+            ];
+
+            // Collect values for each day
+            foreach ($days as $day) {
+                $value = null;
+                if (isset($valuesByDate[$day])) {
+                    $metricValue = $valuesByDate[$day]->firstWhere('metric_id', $metric->id);
+                    if ($metricValue) {
+                        $value = $metric->type === 'scale' ? $metricValue->value_int : ($metricValue->value_bool ? 1 : 0);
+                    }
+                }
+                $data['values'][] = $value;
+            }
+
+            $chartData[] = $data;
+        }
+
+        return $chartData;
+    }
 }

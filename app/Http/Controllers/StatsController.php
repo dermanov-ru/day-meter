@@ -32,9 +32,13 @@ class StatsController extends Controller
 
         // Get detailed stats for the month
         $stats = $reportService->getMonthlyDetailedStats($user, $month);
+        
+        // Get chart data
+        $chartData = $reportService->getMonthlyChartData($user, $month);
 
         return view('stats.month', [
             'stats' => $stats,
+            'chartData' => $chartData,
             'month' => $month,
             'monthString' => $month->format('Y-m'),
         ]);

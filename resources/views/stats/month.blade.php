@@ -26,14 +26,32 @@
                 </div>
             </div>
 
-            <!-- Statistics Table -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <h3 class="text-lg font-semibold mb-4">
-                        {{ __('Statistics for') }} {{ $month->format('F Y') }}
+            @if(count($chartData) > 0)
+                <!-- Charts Section -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">
+                        {{ __('Visualization') }}
                     </h3>
+                    
+                    @foreach ($chartData as $chart)
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6 p-6">
+                            <h4 class="text-md font-medium mb-4 text-gray-700">
+                                {{ $chart['metric']->title }}
+                            </h4>
+                            <div style="position: relative; height: 300px;">
+                                <canvas id="chart_{{ $chart['metric']->id }}"></canvas>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
 
-                    @if(count($stats) > 0)
+                <!-- Statistics Table -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
+                        <h3 class="text-lg font-semibold mb-4">
+                            {{ __('Statistics for') }} {{ $month->format('F Y') }}
+                        </h3>
+
                         <div class="overflow-x-auto">
                             <table class="min-w-full border-collapse border border-gray-300">
                                 <thead class="bg-gray-100">
@@ -90,13 +108,80 @@
                                 </tbody>
                             </table>
                         </div>
-                    @else
+                    </div>
+                </div>
+            @else
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
                         <p class="text-gray-500 text-center py-8">
                             {{ __('No data available for this month.') }}
                         </p>
-                    @endif
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    
+    <script>
+        @foreach ($chartData as $chart)
+            (function() {
+                const ctx = document.getElementById('chart_{{ $chart['metric']->id }}').getContext('2d');
+                const chartType = '{{ $chart['type'] }}' === 'scale' ? 'line' : 'bar';
+                
+                new Chart(ctx, {
+                    type: chartType,
+                    data: {
+                        labels: {!! json_encode(array_map(fn($d) => substr($d, 8), $chart['labels'])) !!},
+                        datasets: [{
+                            label: '{{ $chart['metric']->title }}',
+                            data: {!! json_encode($chart['values']) !!},
+                            @if($chart['type'] === 'scale')
+                                borderColor: 'rgb(59, 130, 246)',
+                                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 4,
+                                pointBackgroundColor: 'rgb(59, 130, 246)',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                            @else
+                                backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                                borderColor: 'rgb(59, 130, 246)',
+                                borderWidth: 1,
+                            @endif
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                @if($chart['type'] === 'scale')
+                                    min: 0,
+                                    max: 10,
+                                @else
+                                    min: 0,
+                                    max: 1,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return value === 1 ? 'Yes' : 'No';
+                                        }
+                                    }
+                                @endif
+                            }
+                        }
+                    }
+                });
+            })();
+        @endforeach
+    </script>
 </x-app-layout>
