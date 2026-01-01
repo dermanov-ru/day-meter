@@ -1,59 +1,162 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+DayMeter — текущий функционал (as-is)
+👤 Пользователь
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Регистрация и логин (стандартный Laravel)
 
-## About Laravel
+Все данные жёстко привязаны к пользователю
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Нет общего доступа, нет шаринга
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+🧩 Метрики
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Метрики задаются через код / миграции / сидеры
 
-## Learning Laravel
+Поддерживаемые типы:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+boolean (да / нет)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+scale (целое число в диапазоне, обычно 1–10)
 
-## Laravel Sponsors
+У метрики есть:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+key
 
-### Premium Partners
+название
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+тип
 
-## Contributing
+min / max
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+активность
 
-## Code of Conduct
+порядок отображения
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Можно добавлять новые метрики без изменения существующих данных
 
-## Security Vulnerabilities
+📝 Дневные записи
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Одна запись на пользователя в день
 
-## License
+Запись идентифицируется по дате
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Запись можно:
+
+создать
+
+отредактировать
+
+Данные хранятся:
+
+по одной строке на метрику
+
+без JSON
+
+Чужие записи недоступны
+
+✍️ Ввод данных
+
+Страница «Добавить / редактировать день»
+
+Для каждой метрики:
+
+boolean → checkbox
+
+scale → number input (min / max)
+
+Валидация:
+
+по типу метрики
+
+по допустимому диапазону
+
+Сохранение — idempotent (без дублей)
+
+📊 Статистика (Dashboard)
+
+Главная страница после логина
+
+Отображает агрегированные данные пользователя
+
+Можно выбрать период:
+
+неделя
+
+месяц
+
+Статистика строится по фактически введённым дням
+
+Для scale-метрик
+
+Среднее значение за период
+
+Количество дней с данными
+
+Для boolean-метрик
+
+Количество yes / no
+
+Процент yes за период
+
+📆 Отчёты
+
+Weekly report
+
+средние значения
+
+количество срывов (если применимо)
+
+Monthly report
+
+min / max по шкалам
+
+общее количество дней с записями
+
+(реализация через ReportService)
+
+🧠 Бизнес-логика (базовая)
+
+Расчёты выполняются на бэке
+
+UI — только отображение
+
+Логика централизована в сервисе отчётов
+
+Нет жёстко зашитых правил — всё можно расширять
+
+🧱 Архитектура
+
+Laravel + Blade
+
+Eloquent модели:
+
+Metric
+
+DayEntry
+
+MetricValue
+
+Сервис:
+
+ReportService
+
+Без SPA
+
+Без фронтовых фреймворков
+
+Минимальный JS (или вообще без него)
+
+🟢 Что важно: чего НЕТ (и это хорошо)
+
+❌ Нет соцфункций
+
+❌ Нет сложной аналитики
+
+❌ Нет AI, пушей, триггеров
+
+❌ Нет редактирования метрик через UI
+
+Это осознанный минимализм, а не недоделка.
+
+🏁 Коротко, в одну фразу
+
+DayMeter — это приватный сервис ежедневного учёта состояния пользователя с расширяемыми метриками и агрегированной статистикой за неделю и месяц.
