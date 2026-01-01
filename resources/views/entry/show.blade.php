@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Entry for ') }}<span class="font-bold text-blue-600">{{ \Carbon\Carbon::parse($date)->format('M d, Y') }}</span>
+            {{ __("Введите данные за ") }}<span class="font-bold text-blue-600">{{ \Carbon\Carbon::parse($date)->format('d.m.Y') }}</span>
         </h2>
     </x-slot>
 
