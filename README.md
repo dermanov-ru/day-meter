@@ -49,22 +49,18 @@ DayMeter помогает:
 
 #### Эмоциональное состояние
 - **Настроение** (`mood`, scale)
-- **Уровень раздражения** (`irritation`, scale)
-
-#### Срывы
-- **Кричал** (`yell`, boolean)
 
 #### Работа
-- **Утомила работа** (`work_exhausted`, boolean)
-- **Работал ночью** (`worked_at_night`, boolean)
+- **Перегруз на работе** (`work_exhausted`, boolean)
+- **Работал до поздна** (`worked_at_night`, boolean)
 
 #### Семья и дети
 - **Гулял с детьми** (`walked_with_kids`, boolean)
 - **Читал детям** (`read_to_kids`, boolean)
 
 #### Активность и восстановление
-- **Был на массаже** (`was_on_massage`, boolean)
-- **Гулял ночью** (`walked_at_night`, boolean)
+- **Был на массаже/бассейне/фитнесе** (`was_on_massage`, boolean)
+- **Ходьба вечером** (`walked_at_night`, boolean)
 
 ---
 
