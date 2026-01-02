@@ -17,6 +17,7 @@ class MetricValue extends Model
         'metric_id',
         'value_bool',
         'value_int',
+        'comment',
     ];
 
     /**

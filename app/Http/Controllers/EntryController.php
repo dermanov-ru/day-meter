@@ -46,8 +46,10 @@ class EntryController extends Controller
         // Load existing values for this day
         $values = MetricValue::where('day_entry_id', $dayEntry->id)->get();
         $metricValues = [];
+        $metricComments = [];
         foreach ($values as $value) {
             $metricValues[$value->metric_id] = $value->value_bool ?? $value->value_int;
+            $metricComments[$value->metric_id] = $value->comment;
         }
 
         return view('entry.show', [
@@ -55,6 +57,7 @@ class EntryController extends Controller
             'metrics' => $metrics,
             'date' => $date,
             'metricValues' => $metricValues,
+            'metricComments' => $metricComments,
         ]);
     }
 
@@ -95,6 +98,7 @@ class EntryController extends Controller
             } else {
                 $rules["metric_{$metric->id}"] = "sometimes|integer|min:{$metric->min_value}|max:{$metric->max_value}";
             }
+            $rules["metric_{$metric->id}_comment"] = 'sometimes|nullable|string|max:500';
         }
 
         $validated = $request->validate($rules);
@@ -102,10 +106,9 @@ class EntryController extends Controller
         // Save/update metric values
         foreach ($metrics as $metric) {
             $key = "metric_{$metric->id}";
+            $commentKey = "metric_{$metric->id}_comment";
 
-            if (isset($validated[$key])) {
-                $value = $validated[$key];
-
+            if (isset($validated[$key]) || isset($validated[$commentKey])) {
                 // Find or create the metric value
                 $metricValue = MetricValue::where('day_entry_id', $dayEntry->id)
                     ->where('metric_id', $metric->id)
@@ -118,12 +121,20 @@ class EntryController extends Controller
                 }
 
                 // Set the appropriate value based on type
-                if ($metric->type === 'boolean') {
-                    $metricValue->value_bool = $value;
-                    $metricValue->value_int = null;
-                } else {
-                    $metricValue->value_int = $value;
-                    $metricValue->value_bool = null;
+                if (isset($validated[$key])) {
+                    $value = $validated[$key];
+                    if ($metric->type === 'boolean') {
+                        $metricValue->value_bool = $value;
+                        $metricValue->value_int = null;
+                    } else {
+                        $metricValue->value_int = $value;
+                        $metricValue->value_bool = null;
+                    }
+                }
+
+                // Set the comment if provided
+                if (isset($validated[$commentKey])) {
+                    $metricValue->comment = $validated[$commentKey];
                 }
 
                 $metricValue->save();

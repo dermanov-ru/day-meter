@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DayEntry;
 use App\Services\ReportService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -35,10 +36,20 @@ class StatsController extends Controller
         
         // Get chart data
         $chartData = $reportService->getMonthlyChartData($user, $month);
+        
+        // Get daily entries with metric values and comments
+        $startDate = $month->copy()->startOfMonth()->toDateString();
+        $endDate = $month->copy()->endOfMonth()->toDateString();
+        $dayEntries = DayEntry::where('user_id', $user->id)
+            ->whereBetween('date', [$startDate, $endDate])
+            ->with('values')
+            ->orderBy('date', 'desc')
+            ->get();
 
         return view('stats.month', [
             'stats' => $stats,
             'chartData' => $chartData,
+            'dayEntries' => $dayEntries,
             'month' => $month,
             'monthString' => $month->format('Y-m'),
         ]);

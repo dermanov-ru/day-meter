@@ -45,6 +45,50 @@
                     @endforeach
                 </div>
 
+                <!-- Daily Breakdown with Comments -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+                    <div class="p-6 text-gray-900">
+                        <h3 class="text-lg font-semibold mb-4">
+                            {{ __('Daily Entries') }}
+                        </h3>
+
+                        @if(count($dayEntries) > 0)
+                            <div class="space-y-4">
+                                @foreach($dayEntries as $dayEntry)
+                                    <div class="border border-gray-200 rounded-lg p-4">
+                                        <h4 class="font-medium text-gray-800 mb-3">
+                                            {{ \Carbon\Carbon::parse($dayEntry->date)->format('d.m.Y (l)') }}
+                                        </h4>
+                                        <div class="space-y-2">
+                                            @forelse($dayEntry->values as $value)
+                                                <div class="text-sm">
+                                                    <div class="font-medium text-gray-700">{{ $value->metric->title }}</div>
+                                                    <div class="text-gray-600">
+                                                        @if($value->metric->type === 'scale')
+                                                            {{ __('Value') }}: <strong>{{ $value->value_int ?? '-' }}</strong>
+                                                        @else
+                                                            {{ __('Value') }}: <strong>{{ $value->value_bool ? __('Yes') : __('No') }}</strong>
+                                                        @endif
+                                                    </div>
+                                                    @if($value->comment)
+                                                        <div class="mt-1 p-2 bg-blue-50 border border-blue-200 rounded text-gray-700 text-xs">
+                                                            <span class="font-medium text-blue-700">{{ __('Comment') }}: </span>{{ $value->comment }}
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            @empty
+                                                <p class="text-gray-400 text-sm">{{ __('No data') }}</p>
+                                            @endforelse
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="text-gray-500 text-center py-4">{{ __('No data available for this month.') }}</p>
+                        @endif
+                    </div>
+                </div>
+
                 <!-- Statistics Table -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
