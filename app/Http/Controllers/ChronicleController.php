@@ -34,11 +34,11 @@ class ChronicleController extends Controller
         $startDate = $month->copy()->startOfMonth()->toDateString();
         $endDate = $month->copy()->endOfMonth()->toDateString();
         
-        // Get day entries for the month, ordered by date descending
+        // Get day entries for the month, ordered by date ascending (old to new)
         $dayEntries = DayEntry::where('user_id', $user->id)
             ->whereBetween('date', [$startDate, $endDate])
             ->with('values.metric')
-            ->orderBy('date', 'desc')
+            ->orderBy('date', 'asc')
             ->get();
         
         // Get all active metrics for reference

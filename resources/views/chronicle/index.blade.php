@@ -40,41 +40,30 @@
                                     </h3>
                                 </div>
 
-                                <!-- Day Note and Metrics -->
+                                <!-- Day Note -->
                                 @if($dayEntry->day_note)
-                                    <!-- Has day note: show note and metrics -->
-                                    <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                        <p class="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                                    <div class="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                        <p class="text-gray-700 leading-relaxed">
                                             {{ $dayEntry->day_note }}
                                         </p>
                                     </div>
+                                @endif
 
-                                    <!-- Metrics Summary - Compact -->
-                                    @if($dayEntry->values->count() > 0)
-                                        <div class="text-sm text-gray-700">
-                                            @foreach($dayEntry->values as $index => $value)
-                                                <span class="inline-block">
-                                                    <strong>{{ $value->metric->title }}:</strong>
-                                                    @if($value->metric->type === 'scale')
-                                                        {{ $value->value_int ?? '-' }}
-                                                    @else
-                                                        {{ $value->value_bool ? __('да') : __('нет') }}
-                                                    @endif{{ $index < $dayEntry->values->count() - 1 ? ' · ' : '' }}
-                                                </span>
-                                            @endforeach
-                                        </div>
-                                        @if($dayEntry->values->whereNotNull('comment')->count() > 0)
-                                            <div class="mt-2 text-xs text-gray-600 space-y-1">
-                                                @foreach($dayEntry->values as $value)
-                                                    @if($value->comment)
-                                                        <div class="italic"><strong>{{ $value->metric->title }}:</strong> {{ $value->comment }}</div>
-                                                    @endif
-                                                @endforeach
+                                <!-- Metric Comments Only -->
+                                @php
+                                    $commentsWithMetrics = $dayEntry->values->filter(fn($v) => $v->comment)->values();
+                                @endphp
+                                @if($commentsWithMetrics->count() > 0)
+                                    <div class="text-sm text-gray-600 space-y-2">
+                                        @foreach($commentsWithMetrics as $value)
+                                            <div class="pl-3 border-l-2 border-gray-300">
+                                                <div class="font-medium text-gray-700">{{ $value->metric->title }}</div>
+                                                <div class="italic text-gray-600">{{ $value->comment }}</div>
                                             </div>
-                                        @endif
-                                    @endif
-                                @else
-                                    <!-- No day note: show "нет данных" -->
+                                        @endforeach
+                                    </div>
+                                @elseif(!$dayEntry->day_note)
+                                    <!-- No day note and no comments: show "нет данных" -->
                                     <p class="text-gray-500 italic text-sm">
                                         {{ __('Нет данных') }}
                                     </p>
