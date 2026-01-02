@@ -78,6 +78,23 @@
                             @endforeach
                         </div>
 
+                        <!-- Day Note Section -->
+                        <div class="mt-8 pt-8 border-t border-gray-200">
+                            <label for="day_note" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ __('Коротко о дне') }}
+                            </label>
+                            <textarea name="day_note"
+                                      id="day_note"
+                                      rows="4"
+                                      maxlength="1000"
+                                      placeholder="{{ __('Что было важного / что запомнилось / почему так получилось') }}"
+                                      class="block w-full rounded-md border-gray-300 shadow-sm">{{ $dayNote ?? '' }}</textarea>
+                            <p class="text-xs text-gray-500 mt-1">{{ __('Максимум 1000 символов') }}</p>
+                            @error('day_note')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <div class="mt-6">
                             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                                 {{ __('Save') }}

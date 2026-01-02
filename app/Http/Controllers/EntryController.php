@@ -58,6 +58,7 @@ class EntryController extends Controller
             'date' => $date,
             'metricValues' => $metricValues,
             'metricComments' => $metricComments,
+            'dayNote' => $dayEntry->day_note,
         ]);
     }
 
@@ -102,6 +103,7 @@ class EntryController extends Controller
             $rules["metric_{$metric->id}_comment"] = 'sometimes|nullable|string|max:500';
         }
         $rules['date'] = 'sometimes'; // Allow date, we already validated it
+        $rules['day_note'] = 'sometimes|nullable|string|max:1000';
 
         $validated = $request->validate($rules);
 
@@ -146,6 +148,12 @@ class EntryController extends Controller
 
                 $metricValue->save();
             }
+        }
+
+        // Save day_note if provided
+        if (isset($validated['day_note'])) {
+            $dayEntry->day_note = $validated['day_note'];
+            $dayEntry->save();
         }
 
         return redirect()->route('entry.show', ['date' => $date])

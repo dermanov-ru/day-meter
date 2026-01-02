@@ -21,6 +21,9 @@
                     <x-nav-link :href="route('stats.month')" :active="request()->routeIs('stats.*')">
                         {{ __('Stats') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('chronicle.index')" :active="request()->routeIs('chronicle.*')">
+                        {{ __('Летопись') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -81,6 +84,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('stats.month')" :active="request()->routeIs('stats.*')">
                 {{ __('Stats') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('chronicle.index')" :active="request()->routeIs('chronicle.*')">
+                {{ __('Летопись') }}
             </x-responsive-nav-link>
         </div>
 

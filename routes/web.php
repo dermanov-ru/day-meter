@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChronicleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EntryController;
 use App\Http\Controllers\ProfileController;
@@ -23,6 +24,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/entry', [EntryController::class, 'store'])->name('entry.store');
 
     Route::get('/stats/month', [StatsController::class, 'month'])->name('stats.month');
+
+    Route::get('/chronicle', [ChronicleController::class, 'index'])->name('chronicle.index');
 });
 
 require __DIR__.'/auth.php';

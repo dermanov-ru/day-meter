@@ -15,6 +15,7 @@ class DayEntry extends Model
     protected $fillable = [
         'user_id',
         'date',
+        'day_note',
     ];
 
     /**
