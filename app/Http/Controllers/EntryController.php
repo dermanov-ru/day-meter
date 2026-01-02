@@ -18,7 +18,8 @@ class EntryController extends Controller
     public function show(Request $request, LogicalDateService $logicalDateService, ?string $date = null)
     {
         $user = Auth::user();
-        
+        $date = $request->query('date', $date);
+
         // Use logical date if no date provided
         if ($date === null) {
             $date = $logicalDateService->getLogicalDateString();
@@ -101,10 +102,10 @@ class EntryController extends Controller
         // Save/update metric values
         foreach ($metrics as $metric) {
             $key = "metric_{$metric->id}";
-            
+
             if (isset($validated[$key])) {
                 $value = $validated[$key];
-                
+
                 // Find or create the metric value
                 $metricValue = MetricValue::where('day_entry_id', $dayEntry->id)
                     ->where('metric_id', $metric->id)

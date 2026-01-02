@@ -1,10 +1,23 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __("Введите данные за ") }}<span class="font-bold text-blue-600">{{ \Carbon\Carbon::parse($date)->format('d.m.Y') }}</span>
-        </h2>
-    </x-slot>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __("Введите данные за ") }}<span
+                    class="font-bold text-blue-600">{{ \Carbon\Carbon::parse($date)->format('d.m.Y') }}</span>
+            </h2>
+            <form method="GET" action="{{ route('entry.show') }}" class="flex items-center gap-2">
+                или <input type="date"
+                       name="date"
+                       value="{{ $date }}"
+                       class="rounded-md border-gray-300 shadow-sm"
+                       required>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    {{ __('Перейти') }}
+                </button>
+            </form>
+        </div>
 
+    </x-slot>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
