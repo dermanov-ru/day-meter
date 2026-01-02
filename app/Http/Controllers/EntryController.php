@@ -94,21 +94,25 @@ class EntryController extends Controller
         $rules = [];
         foreach ($metrics as $metric) {
             if ($metric->type === 'boolean') {
-                $rules["metric_{$metric->id}"] = 'sometimes|boolean';
+                $rules["metric_{$metric->id}"] = 'sometimes|in:0,1';
             } else {
-                $rules["metric_{$metric->id}"] = "sometimes|integer|min:{$metric->min_value}|max:{$metric->max_value}";
+                // Numeric metrics are required
+                $rules["metric_{$metric->id}"] = "required|integer|min:{$metric->min_value}|max:{$metric->max_value}";
             }
             $rules["metric_{$metric->id}_comment"] = 'sometimes|nullable|string|max:500';
         }
+        $rules['date'] = 'sometimes'; // Allow date, we already validated it
 
         $validated = $request->validate($rules);
 
         // Save/update metric values
+        $saveCount = 0;
         foreach ($metrics as $metric) {
             $key = "metric_{$metric->id}";
             $commentKey = "metric_{$metric->id}_comment";
 
             if (isset($validated[$key]) || isset($validated[$commentKey])) {
+                $saveCount++;
                 // Find or create the metric value
                 $metricValue = MetricValue::where('day_entry_id', $dayEntry->id)
                     ->where('metric_id', $metric->id)
@@ -118,16 +122,19 @@ class EntryController extends Controller
                     $metricValue = new MetricValue();
                     $metricValue->day_entry_id = $dayEntry->id;
                     $metricValue->metric_id = $metric->id;
+                    // Initialize values
+                    $metricValue->value_bool = null;
+                    $metricValue->value_int = null;
                 }
 
                 // Set the appropriate value based on type
                 if (isset($validated[$key])) {
                     $value = $validated[$key];
                     if ($metric->type === 'boolean') {
-                        $metricValue->value_bool = $value;
+                        $metricValue->value_bool = (bool) (int) $value; // Convert '0'/'1' string to boolean
                         $metricValue->value_int = null;
                     } else {
-                        $metricValue->value_int = $value;
+                        $metricValue->value_int = (int) $value;
                         $metricValue->value_bool = null;
                     }
                 }

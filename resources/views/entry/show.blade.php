@@ -41,6 +41,7 @@
                                     </label>
 
                                     @if ($metric->type === 'boolean')
+                                        <input type="hidden" name="metric_{{ $metric->id }}" value="0">
                                         <input type="checkbox"
                                                id="metric_{{ $metric->id }}"
                                                name="metric_{{ $metric->id }}"
@@ -54,7 +55,8 @@
                                                min="{{ $metric->min_value }}"
                                                max="{{ $metric->max_value }}"
                                                value="{{ $metricValues[$metric->id] ?? '' }}"
-                                               class="mt-2 block w-full rounded-md border-gray-300 shadow-sm">
+                                               class="mt-2 block w-full rounded-md border-gray-300 shadow-sm"
+                                               required>
                                     @endif
 
                                     @error("metric_{{ $metric->id }}")
@@ -62,24 +64,15 @@
                                     @enderror
 
                                     <!-- Comment Section -->
-                                    <div class="mt-3" x-data="{ expanded: {{ isset($metricComments[$metric->id]) && $metricComments[$metric->id] ? 'true' : 'false' }} }">
-                                        <button type="button"
-                                                @click="expanded = !expanded"
-                                                class="text-sm text-blue-600 hover:text-blue-800 font-medium">
-                                            <span x-show="!expanded">{{ __('Add comment') }}</span>
-                                            <span x-show="expanded">{{ __('Hide comment') }}</span>
-                                        </button>
-                                        
-                                        <div x-show="expanded" class="mt-2">
-                                            <textarea name="metric_{{ $metric->id }}_comment"
-                                                      id="metric_{{ $metric->id }}_comment"
-                                                      rows="2"
-                                                      placeholder="{{ __('Add optional explanation...') }}"
-                                                      class="block w-full rounded-md border-gray-300 shadow-sm text-sm">{{ $metricComments[$metric->id] ?? '' }}</textarea>
-                                            @error("metric_{{ $metric->id }}_comment")
-                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                            @enderror
-                                        </div>
+                                    <div class="mt-3">
+                                        <textarea name="metric_{{ $metric->id }}_comment"
+                                                  id="metric_{{ $metric->id }}_comment"
+                                                  rows="2"
+                                                  placeholder="{{ __('Add optional explanation...') }}"
+                                                  class="block w-full rounded-md border-gray-300 shadow-sm text-sm">{{ $metricComments[$metric->id] ?? '' }}</textarea>
+                                        @error("metric_{{ $metric->id }}_comment")
+                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                        @enderror
                                     </div>
                                 </div>
                             @endforeach
