@@ -663,6 +663,11 @@
                     <div class="card-title">Для ИИ анализа</div>
                     <div class="card-text">Экспортируйте и отдавайте ИИ для осмысленных выводов</div>
                 </div>
+                <div class="card">
+                    <div class="card-icon">📱</div>
+                    <div class="card-title">Мобильное приложение</div>
+                    <div class="card-text">PWA с push-уведомлениями для регулярного трекинга</div>
+                </div>
             </div>
 
             <div class="highlight-box">
@@ -919,6 +924,75 @@
                 </div>
                 <div class="column-visual">
                     <div class="visual-box">📤</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PWA и Push уведомления -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Мобильное приложение и напоминания</h2>
+            <p class="section-subtitle">Используйте DayMeter как нативное приложение на смартфоне</p>
+
+            <div class="two-column">
+                <div class="column-text">
+                    <h3>📱 Progressive Web App (PWA)</h3>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Установка как нативное приложение на мобильное устройство</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Собственная иконка в списке приложений</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Полноэкранный режим без адресной строки браузера</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Базовая работа офлайн (просмотр ранее загруженных данных)</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1.5rem;"><strong>Просто откройте сайт в браузере</strong> — система предложит установить приложение автоматически.</p>
+                </div>
+                <div class="column-visual">
+                    <div class="visual-box">📲</div>
+                </div>
+            </div>
+
+            <div class="two-column reverse" style="margin-top: 3rem;">
+                <div class="column-text">
+                    <h3>🔔 Push-уведомления</h3>
+                    <p>Настройте персональные напоминания о заполнении данных за день:</p>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Выбор удобного времени уведомления (с точностью до минуты)</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Уведомления работают даже когда приложение закрыто</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Поддержка нескольких устройств для одного пользователя</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Простое управление подписками через настройки профиля</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Автоматическая отправка через планировщик</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1.5rem;"><strong>Регулярность — ключ к качественной аналитике.</strong> Напоминания помогают не забывать фиксировать данные каждый день.</p>
+                </div>
+                <div class="column-visual">
+                    <div class="visual-box">⏰</div>
                 </div>
             </div>
         </div>
