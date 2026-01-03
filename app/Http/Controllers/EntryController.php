@@ -181,6 +181,14 @@ class EntryController extends Controller
             $dayEntry->save();
         }
 
+        // Return JSON for async requests, redirect for regular requests
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Entry saved successfully'
+            ]);
+        }
+
         return redirect()->route('entry.show', ['date' => $date])
             ->with('status', 'Entry saved successfully');
     }

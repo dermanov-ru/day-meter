@@ -28,7 +28,7 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('entry.store') }}">
+                    <form method="POST" action="{{ route('entry.store') }}" id="entry-form">
                         @csrf
 
                         <input type="hidden" name="date" value="{{ $date }}">
@@ -135,7 +135,7 @@
                             </label>
                             <textarea name="day_note"
                                       id="day_note"
-                                      rows="10"
+                                      rows="20"
                                       maxlength="1000"
                                       placeholder="{{ __('Что было важного / что запомнилось / почему так получилось') }}"
                                       class="block w-full rounded-md border-gray-300 shadow-sm font-mono text-sm">{{ $dayNote ?? '' }}</textarea>
@@ -145,15 +145,15 @@
                             @enderror
                         </div>
 
-                        <!-- Desktop Save Button -->
-                        <div class="mt-6 hidden sm:block">
-                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                                {{ __('Save') }}
+                        <!-- Static Save Button at Bottom -->
+                        <div class="mt-8 pt-8 border-t border-gray-200">
+                            <button type="button" onclick="submitForm(document.getElementById('entry-form'))" class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium">
+                                {{ __('Сохранить') }}
                             </button>
                         </div>
 
                         <!-- Mobile Floating Save Button -->
-                        <button type="submit" class="fixed bottom-8 right-8 sm:hidden w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110">
+                        <button type="button" onclick="submitForm(document.getElementById('entry-form'))" class="fixed bottom-8 right-8 sm:hidden w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V3"></path>
                             </svg>
@@ -162,6 +162,11 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Success Toast Notification -->
+    <div id="success-toast" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none z-50">
+        ✓ Данные сохранены
     </div>
 
     <script>
@@ -182,11 +187,11 @@
         function toggleAccordion(categoryId) {
             const header = document.querySelector(`button[data-category-id="${categoryId}"]`);
             const content = document.querySelector(`div.accordion-content[data-category-id="${categoryId}"]`);
-            
+
             if (!content) return;
 
             const isOpen = content.style.maxHeight && parseInt(content.style.maxHeight) > 0;
-            
+
             // Close all other accordions
             document.querySelectorAll('div.accordion-content').forEach(el => {
                 if (el.getAttribute('data-category-id') !== categoryId) {
@@ -199,7 +204,7 @@
                     }
                 }
             });
-            
+
             // Toggle current accordion
             if (isOpen) {
                 content.style.maxHeight = '0';
@@ -218,22 +223,22 @@
         function updateCounter(categoryId) {
             const container = document.querySelector(`div.accordion-item[data-category-id="${categoryId}"]`);
             if (!container) return;
-            
+
             const metrics = container.querySelectorAll('.metric-item');
             let filled = 0;
-            
+
             metrics.forEach(metric => {
                 const metricId = metric.getAttribute('data-metric-id');
                 const checkbox = metric.querySelector(`input[type="checkbox"][id="metric_${metricId}"]`);
                 const slider = metric.querySelector(`input[type="range"][id="metric_${metricId}"]`);
-                
+
                 if (checkbox && checkbox.checked) {
                     filled++;
                 } else if (slider && slider.value !== null && slider.value !== undefined) {
                     filled++;
                 }
             });
-            
+
             const counter = container.querySelector('.accordion-counter');
             if (counter) {
                 counter.textContent = `${filled} / ${metrics.length}`;
@@ -241,19 +246,6 @@
         }
 
         function initializeAccordions() {
-            const firstItem = document.querySelector('div.accordion-item');
-            if (firstItem) {
-                const firstCategoryId = firstItem.getAttribute('data-category-id');
-                const content = firstItem.querySelector('div.accordion-content');
-                if (content) {
-                    const scrollHeight = content.querySelector('div:last-child').scrollHeight;
-                    content.style.maxHeight = (scrollHeight + 48) + 'px';
-                    content.style.opacity = '1';
-                    const chevron = firstItem.querySelector('.accordion-chevron');
-                    if (chevron) chevron.style.transform = 'rotate(180deg)';
-                }
-            }
-            
             // Initialize all counters
             document.querySelectorAll('div.accordion-item').forEach(item => {
                 const categoryId = item.getAttribute('data-category-id');
@@ -265,38 +257,76 @@
             const deltaInput = document.getElementById('delta_note');
             const mainNote = document.getElementById('day_note');
             const text = deltaInput.value.trim();
-            
+
             if (!text) return;
-            
+
             // Get current time
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const timestamp = `${hours}:${minutes}`;
-            
+
             // Format: — HH:MM\n<text>
             const delta = `— ${timestamp}\n${text}`;
-            
+
             // Save current scroll position
             const scrollBefore = mainNote.scrollTop;
-            
+
             // Add delta to main note
             if (mainNote.value) {
                 mainNote.value += '\n\n' + delta;
             } else {
                 mainNote.value = delta;
             }
-            
+
             // Restore scroll position and clear delta input
             mainNote.scrollTop = scrollBefore;
             deltaInput.value = '';
             deltaInput.focus();
-            
-            // Auto-submit form
-            const form = mainNote.closest('form');
-            if (form) {
-                form.submit();
-            }
+
+            // Async form submission
+            submitForm(document.getElementById('entry-form'));
+        }
+
+        function showSuccessToast() {
+            const toast = document.getElementById('success-toast');
+            if (!toast) return;
+
+            toast.classList.remove('opacity-0');
+            toast.classList.add('opacity-100');
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                toast.classList.remove('opacity-100');
+            }, 1000);
+        }
+
+        function submitFormAsync(form) {
+            const formData = new FormData(form);
+            const csrfToken = document.querySelector('input[name="_token"]').value;
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccessToast();
+                }
+            })
+            .catch(error => {
+                console.error('Error saving:', error);
+                alert('Ошибка при сохранении. Пожалуйста, попробуйте ещё раз.');
+            });
+        }
+
+        function submitForm(form) {
+            submitFormAsync(form);
         }
 
         // Initialize on page load
@@ -305,9 +335,9 @@
             document.querySelectorAll('input[type="range"].slider').forEach(slider => {
                 updateSliderBackground(slider);
             });
-            
+
             initializeAccordions();
-            
+
             // Allow Enter+Ctrl/Cmd to quickly add delta
             const deltaInput = document.getElementById('delta_note');
             if (deltaInput) {
@@ -326,21 +356,21 @@
         .accordion-header {
             cursor: pointer;
         }
-        
+
         .accordion-header:focus {
             outline: 2px solid #1e40af;
             outline-offset: 2px;
         }
-        
+
         .accordion-chevron {
             display: inline-block;
             transition: transform 0.3s ease;
         }
-        
+
         .accordion-content {
             transition: max-height 0.3s ease, opacity 0.3s ease;
         }
-        
+
         .accordion-counter {
             white-space: nowrap;
         }
