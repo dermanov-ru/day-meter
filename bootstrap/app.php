@@ -10,6 +10,15 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withSchedule(function (\Illuminate\Console\Scheduling\Schedule $schedule) {
+        // Run reminder sending command every minute
+        $schedule->command('reminders:send')
+            ->everyMinute()
+            ->withoutOverlapping()
+            ->onFailure(function () {
+                // Log errors if needed
+            });
+    })
     ->withMiddleware(function (Middleware $middleware): void {
         //
     })

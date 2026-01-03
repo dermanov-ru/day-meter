@@ -220,6 +220,8 @@ DayMeter подойдёт тем, кто:
 ```
 ./vendor/laravel/sail/bin/sail up -d
 ./vendor/laravel/sail/bin/sail artisan migrate
+./vendor/laravel/sail/bin/sail artisan schedule:list
+./vendor/laravel/sail/bin/sail artisan reminders:send
 ./vendor/bin/sail npm run build
 
 ./vendor/bin/sail artisan chronicle:export --from=2026-01-01 --to=2027-01-01 --user-id=2
