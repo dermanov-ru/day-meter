@@ -328,13 +328,19 @@
                 },
                 body: formData
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+            .then(response => response.json().then(data => ({ status: response.status, ok: response.ok, data })))
+            .then(({ status, ok, data }) => {
+                if (!ok) {
+                    // Server returned error with validation details
+                    if (data.errors) {
+                        const errorMessages = Object.values(data.errors).flat().join('\n');
+                        throw new Error(`Ошибка валидации (${status}):\n${errorMessages}`);
+                    } else if (data.message) {
+                        throw new Error(`${data.message} (${status})`);
+                    } else {
+                        throw new Error(`HTTP error! status: ${status}`);
+                    }
                 }
-                return response.json();
-            })
-            .then(data => {
                 console.log('Save response:', data);
                 if (data.success) {
                     showSuccessToast();
