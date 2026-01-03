@@ -344,10 +344,7 @@
             })
             .catch(error => {
                 console.error('Error saving:', error);
-                // Don't show alert on mobile to avoid interrupting user
-                if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    alert('Ошибка при сохранении. Пожалуйсте, попробуйте ещё раз.');
-                }
+                alert('Ошибка при сохранении: ' + error.message);
             });
         }
 
