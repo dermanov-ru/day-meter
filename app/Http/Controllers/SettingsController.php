@@ -193,12 +193,34 @@ class SettingsController extends Controller
      */
     public function export()
     {
+        $user = Auth::user();
+        
+        // Find first and last date with data
+        $firstEntry = \App\Models\DayEntry::where('user_id', $user->id)
+            ->orderBy('date', 'asc')
+            ->first();
+        
+        $lastEntry = \App\Models\DayEntry::where('user_id', $user->id)
+            ->orderBy('date', 'desc')
+            ->first();
+        
+        // Default: last month
         $from = Carbon::now()->subMonth()->startOfMonth();
         $to = Carbon::now()->subMonth()->endOfMonth();
+        
+        // Calculate all time range if data exists
+        $allTimeFrom = null;
+        $allTimeTo = null;
+        if ($firstEntry && $lastEntry) {
+            $allTimeFrom = Carbon::parse($firstEntry->date)->toDateString();
+            $allTimeTo = Carbon::parse($lastEntry->date)->toDateString();
+        }
 
         return view('settings.export', [
             'from' => $from->toDateString(),
             'to' => $to->toDateString(),
+            'allTimeFrom' => $allTimeFrom,
+            'allTimeTo' => $allTimeTo,
         ]);
     }
 
@@ -215,6 +237,22 @@ class SettingsController extends Controller
         $user = Auth::user();
         $from = Carbon::createFromFormat('Y-m-d', $validated['from']);
         $to = Carbon::createFromFormat('Y-m-d', $validated['to']);
+        
+        // Get all time range for presets
+        $firstEntry = \App\Models\DayEntry::where('user_id', $user->id)
+            ->orderBy('date', 'asc')
+            ->first();
+        
+        $lastEntry = \App\Models\DayEntry::where('user_id', $user->id)
+            ->orderBy('date', 'desc')
+            ->first();
+        
+        $allTimeFrom = null;
+        $allTimeTo = null;
+        if ($firstEntry && $lastEntry) {
+            $allTimeFrom = Carbon::parse($firstEntry->date)->toDateString();
+            $allTimeTo = Carbon::parse($lastEntry->date)->toDateString();
+        }
 
         try {
             $content = $exportService->generateContent($user, $from, $to);
@@ -225,6 +263,8 @@ class SettingsController extends Controller
                 'to' => $validated['to'],
                 'content' => $content,
                 'filename' => $filename,
+                'allTimeFrom' => $allTimeFrom,
+                'allTimeTo' => $allTimeTo,
             ]);
         } catch (\Exception $e) {
             return redirect()->back()

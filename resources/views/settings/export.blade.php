@@ -34,6 +34,12 @@
                     <div class="mb-6">
                         <p class="text-sm font-medium text-gray-700 mb-3">{{ __('Быстрые пресеты:') }}</p>
                         <div class="flex flex-wrap gap-2">
+                            @if ($allTimeFrom && $allTimeTo)
+                                <button type="button" onclick="setPreset('allTime')"
+                                        class="px-3 py-2 bg-purple-200 text-purple-800 rounded text-sm hover:bg-purple-300 font-medium">
+                                    {{ __('За все время') }}
+                                </button>
+                            @endif
                             <button type="button" onclick="setPreset('lastMonth')"
                                     class="px-3 py-2 bg-gray-200 text-gray-800 rounded text-sm hover:bg-gray-300">
                                 {{ __('Прошлый месяц') }}
@@ -161,7 +167,16 @@
             const today = new Date();
             let from, to;
 
-            if (preset === 'lastMonth') {
+            if (preset === 'allTime') {
+                // All time - from first entry to last entry
+                const allTimeFrom = '{{ $allTimeFrom ?? '' }}';
+                const allTimeTo = '{{ $allTimeTo ?? '' }}';
+                if (allTimeFrom && allTimeTo) {
+                    document.getElementById('from').value = allTimeFrom;
+                    document.getElementById('to').value = allTimeTo;
+                }
+                return;
+            } else if (preset === 'lastMonth') {
                 // Previous month
                 from = new Date(today.getFullYear(), today.getMonth() - 1, 1);
                 to = new Date(today.getFullYear(), today.getMonth(), 0);
