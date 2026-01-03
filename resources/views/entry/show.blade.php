@@ -33,64 +33,76 @@
 
                         <input type="hidden" name="date" value="{{ $date }}">
 
-                        <div class="space-y-8">
+                        <div class="space-y-4">
                             @foreach ($categoriesWithMetrics as $category)
                                 @if ($category->metrics->count() > 0)
-                                    <div>
-                                        <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
-                                            {{ $category->title }}
-                                        </h3>
-                                        <div class="space-y-6">
-                                            @foreach ($category->metrics as $metric)
-                                                <div>
-                                                    <label for="metric_{{ $metric->id }}" class="block text-sm font-medium text-gray-700">
-                                                        {{ $metric->title }}
-                                                    </label>
+                                    <div class="accordion-item" data-category-id="{{ $category->id }}">
+                                        <button type="button"
+                                                class="accordion-header w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center justify-between"
+                                                onclick="toggleAccordion('{{ $category->id }}')"
+                                                data-category-id="{{ $category->id }}">
+                                            <div class="flex items-center gap-2">
+                                                <span class="accordion-chevron transition-transform duration-300">▼</span>
+                                                <span>{{ $category->title }}</span>
+                                            </div>
+                                            <span class="accordion-counter text-sm bg-blue-700 px-2 py-1 rounded font-normal">0 / {{ $category->metrics->count() }}</span>
+                                        </button>
+                                        <div class="accordion-content bg-gray-50 rounded-b-lg overflow-hidden transition-all duration-300 max-h-0 opacity-0"
+                                             data-category-id="{{ $category->id }}"
+                                             style="max-height: 0;">
+                                            <div class="p-6 space-y-6">
+                                                @foreach ($category->metrics as $metric)
+                                                    <div class="metric-item" data-metric-id="{{ $metric->id }}">
+                                                        <label for="metric_{{ $metric->id }}" class="block text-sm font-medium text-gray-700">
+                                                            {{ $metric->title }}
+                                                        </label>
 
-                                                    @if ($metric->type === 'boolean')
-                                                        <input type="hidden" name="metric_{{ $metric->id }}" value="0">
-                                                        <input type="checkbox"
-                                                               id="metric_{{ $metric->id }}"
-                                                               name="metric_{{ $metric->id }}"
-                                                               value="1"
-                                                               @if (isset($metricValues[$metric->id]) && $metricValues[$metric->id]) checked @endif
-                                                               class="mt-2">
-                                                    @else
-                                                        <div class="mt-2 space-y-2">
-                                                            <input type="range"
+                                                        @if ($metric->type === 'boolean')
+                                                            <input type="hidden" name="metric_{{ $metric->id }}" value="0">
+                                                            <input type="checkbox"
                                                                    id="metric_{{ $metric->id }}"
                                                                    name="metric_{{ $metric->id }}"
-                                                                   min="{{ $metric->min_value }}"
-                                                                   max="{{ $metric->max_value }}"
-                                                                   value="{{ $metricValues[$metric->id] ?? ($metric->min_value + ($metric->max_value - $metric->min_value) / 2) }}"
-                                                                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                                                                   oninput="updateSliderValue('metric_{{ $metric->id }}')"
-                                                                   required>
-                                                            <div class="flex justify-between text-xs text-gray-500 px-1">
-                                                                <span>{{ $metric->min_value }}</span>
-                                                                <span id="value_metric_{{ $metric->id }}" class="font-semibold text-gray-700">{{ $metricValues[$metric->id] ?? ($metric->min_value + ($metric->max_value - $metric->min_value) / 2) }}</span>
-                                                                <span>{{ $metric->max_value }}</span>
+                                                                   value="1"
+                                                                   @if (isset($metricValues[$metric->id]) && $metricValues[$metric->id]) checked @endif
+                                                                   class="mt-2"
+                                                                   onchange="updateCounter('{{ $category->id }}')">
+                                                        @else
+                                                            <div class="mt-2 space-y-2">
+                                                                <input type="range"
+                                                                       id="metric_{{ $metric->id }}"
+                                                                       name="metric_{{ $metric->id }}"
+                                                                       min="{{ $metric->min_value }}"
+                                                                       max="{{ $metric->max_value }}"
+                                                                       value="{{ $metricValues[$metric->id] ?? ($metric->min_value + ($metric->max_value - $metric->min_value) / 2) }}"
+                                                                       class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                                                                       oninput="updateSliderValue('metric_{{ $metric->id }}'); updateCounter('{{ $category->id }}')"
+                                                                       required>
+                                                                <div class="flex justify-between text-xs text-gray-500 px-1">
+                                                                    <span>{{ $metric->min_value }}</span>
+                                                                    <span id="value_metric_{{ $metric->id }}" class="font-semibold text-gray-700">{{ $metricValues[$metric->id] ?? ($metric->min_value + ($metric->max_value - $metric->min_value) / 2) }}</span>
+                                                                    <span>{{ $metric->max_value }}</span>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    @endif
+                                                        @endif
 
-                                                    @error("metric_{{ $metric->id }}")
-                                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                                    @enderror
-
-                                                    <!-- Comment Section -->
-                                                    <div class="mt-3">
-                                                        <textarea name="metric_{{ $metric->id }}_comment"
-                                                                  id="metric_{{ $metric->id }}_comment"
-                                                                  rows="2"
-                                                                  placeholder="{{ __('Add optional explanation...') }}"
-                                                                  class="block w-full rounded-md border-gray-300 shadow-sm text-sm">{{ $metricComments[$metric->id] ?? '' }}</textarea>
-                                                        @error("metric_{{ $metric->id }}_comment")
+                                                        @error("metric_{{ $metric->id }}")
                                                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                                         @enderror
+
+                                                        <!-- Comment Section -->
+                                                        <div class="mt-3">
+                                                            <textarea name="metric_{{ $metric->id }}_comment"
+                                                                      id="metric_{{ $metric->id }}_comment"
+                                                                      rows="2"
+                                                                      placeholder="{{ __('Add optional explanation...') }}"
+                                                                      class="block w-full rounded-md border-gray-300 shadow-sm text-sm">{{ $metricComments[$metric->id] ?? '' }}</textarea>
+                                                            @error("metric_{{ $metric->id }}_comment")
+                                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                                            @enderror
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            @endforeach
+                                                @endforeach
+                                            </div>
                                         </div>
                                     </div>
                                 @endif
@@ -140,15 +152,122 @@
             slider.style.background = `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${value}%, #e5e7eb ${value}%, #e5e7eb 100%)`;
         }
 
-        // Initialize sliders on page load
+        function toggleAccordion(categoryId) {
+            const header = document.querySelector(`button[data-category-id="${categoryId}"]`);
+            const content = document.querySelector(`div.accordion-content[data-category-id="${categoryId}"]`);
+            
+            if (!content) return;
+
+            const isOpen = content.style.maxHeight && parseInt(content.style.maxHeight) > 0;
+            
+            // Close all other accordions
+            document.querySelectorAll('div.accordion-content').forEach(el => {
+                if (el.getAttribute('data-category-id') !== categoryId) {
+                    el.style.maxHeight = '0';
+                    el.style.opacity = '0';
+                    const otherHeader = document.querySelector(`button[data-category-id="${el.getAttribute('data-category-id')}"]`);
+                    if (otherHeader) {
+                        const chevron = otherHeader.querySelector('.accordion-chevron');
+                        if (chevron) chevron.style.transform = 'rotate(0deg)';
+                    }
+                }
+            });
+            
+            // Toggle current accordion
+            if (isOpen) {
+                content.style.maxHeight = '0';
+                content.style.opacity = '0';
+                const chevron = header.querySelector('.accordion-chevron');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+            } else {
+                const scrollHeight = content.querySelector('div:last-child').scrollHeight;
+                content.style.maxHeight = (scrollHeight + 48) + 'px'; // 48px for padding
+                content.style.opacity = '1';
+                const chevron = header.querySelector('.accordion-chevron');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function updateCounter(categoryId) {
+            const container = document.querySelector(`div.accordion-item[data-category-id="${categoryId}"]`);
+            if (!container) return;
+            
+            const metrics = container.querySelectorAll('.metric-item');
+            let filled = 0;
+            
+            metrics.forEach(metric => {
+                const metricId = metric.getAttribute('data-metric-id');
+                const checkbox = metric.querySelector(`input[type="checkbox"][id="metric_${metricId}"]`);
+                const slider = metric.querySelector(`input[type="range"][id="metric_${metricId}"]`);
+                
+                if (checkbox && checkbox.checked) {
+                    filled++;
+                } else if (slider && slider.value !== null && slider.value !== undefined) {
+                    filled++;
+                }
+            });
+            
+            const counter = container.querySelector('.accordion-counter');
+            if (counter) {
+                counter.textContent = `${filled} / ${metrics.length}`;
+            }
+        }
+
+        function initializeAccordions() {
+            const firstItem = document.querySelector('div.accordion-item');
+            if (firstItem) {
+                const firstCategoryId = firstItem.getAttribute('data-category-id');
+                const content = firstItem.querySelector('div.accordion-content');
+                if (content) {
+                    const scrollHeight = content.querySelector('div:last-child').scrollHeight;
+                    content.style.maxHeight = (scrollHeight + 48) + 'px';
+                    content.style.opacity = '1';
+                    const chevron = firstItem.querySelector('.accordion-chevron');
+                    if (chevron) chevron.style.transform = 'rotate(180deg)';
+                }
+            }
+            
+            // Initialize all counters
+            document.querySelectorAll('div.accordion-item').forEach(item => {
+                const categoryId = item.getAttribute('data-category-id');
+                updateCounter(categoryId);
+            });
+        }
+
+        // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('input[type="range"].slider').forEach(slider => {
                 updateSliderBackground(slider);
             });
+            
+            initializeAccordions();
         });
     </script>
 
     <style>
+        /* Accordion Styles */
+        .accordion-header {
+            cursor: pointer;
+        }
+        
+        .accordion-header:focus {
+            outline: 2px solid #1e40af;
+            outline-offset: 2px;
+        }
+        
+        .accordion-chevron {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        
+        .accordion-content {
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .accordion-counter {
+            white-space: nowrap;
+        }
+
         /* Styling for range slider */
         input[type="range"].slider {
             -webkit-appearance: none;
