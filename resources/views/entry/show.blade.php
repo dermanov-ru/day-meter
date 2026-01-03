@@ -143,7 +143,7 @@
                             </label>
                             <textarea name="day_note"
                                       id="day_note"
-                                      rows="10"
+                                      rows="20"
                                       placeholder="{{ __('Что было важного / что запомнилось / почему так получилось') }}"
                                       class="block w-full rounded-md border-gray-300 shadow-sm font-mono text-sm">{{ $dayNote ?? '' }}</textarea>
                             @error('day_note')
@@ -311,7 +311,7 @@
             const formData = new FormData(form);
             const csrfTokenInput = document.querySelector('input[name="_token"]');
             const csrfToken = csrfTokenInput ? csrfTokenInput.value : '';
-            
+
             if (!csrfToken) {
                 console.error('CSRF token not found');
                 alert('Ошибка: CSRF токен не найден. Перезагрузите страницу.');
@@ -364,39 +364,39 @@
 
         function initVoiceInput() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            
+
             if (!SpeechRecognition) {
                 console.log('Web Speech API не поддерживается');
                 return;
             }
-            
+
             const voiceBtn = document.getElementById('voice-input-btn');
             if (voiceBtn) {
                 voiceBtn.style.display = 'block';
             }
-            
+
             recognition = new SpeechRecognition();
-            
+
             // Detect mobile device
             const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-            
+
             recognition.continuous = !isMobile;  // Disable continuous on mobile
             recognition.interimResults = true;
             recognition.lang = 'ru-RU';
-            
+
             recognition.onstart = function() {
                 isListening = true;
                 updateVoiceButtonState();
             };
-            
+
             recognition.onresult = function(event) {
                 // Reset interim transcript each time
                 interimTranscript = '';
-                
+
                 // Process results correctly
                 for (let i = event.resultIndex; i < event.results.length; i++) {
                     const transcript = event.results[i][0].transcript;
-                    
+
                     // Only add final results to finalTranscript (don't duplicate)
                     if (event.results[i].isFinal) {
                         finalTranscript += transcript + ' ';
@@ -405,31 +405,31 @@
                         interimTranscript += transcript;
                     }
                 }
-                
+
                 // Update field with final + interim (this prevents repetition)
                 const deltaInput = document.getElementById('delta_note');
                 if (deltaInput) {
                     deltaInput.value = finalTranscript + interimTranscript;
                 }
             };
-            
+
             recognition.onerror = function(event) {
                 console.error('Speech recognition error:', event.error);
                 isListening = false;
                 updateVoiceButtonState();
             };
-            
+
             recognition.onend = function() {
                 isListening = false;
                 updateVoiceButtonState();
             };
         }
-        
+
         function toggleVoiceInput() {
             if (!recognition) {
                 initVoiceInput();
             }
-            
+
             if (isListening) {
                 recognition.stop();
                 // Save current value as final when stopping
@@ -442,14 +442,14 @@
                 interimTranscript = '';
                 recognition.start();
             }
-            
+
             updateVoiceButtonState();
         }
-        
+
         function updateVoiceButtonState() {
             const voiceBtn = document.getElementById('voice-input-btn');
             if (!voiceBtn) return;
-            
+
             if (isListening) {
                 voiceBtn.classList.remove('bg-gray-300', 'text-gray-700', 'hover:bg-gray-400');
                 voiceBtn.classList.add('bg-red-500', 'text-white', 'hover:bg-red-600', 'animate-pulse');
@@ -465,12 +465,12 @@
             document.querySelectorAll('input[type="range"].slider').forEach(slider => {
                 updateSliderBackground(slider);
             });
-            
+
             initializeAccordions();
-            
+
             // Initialize voice input
             initVoiceInput();
-            
+
             // Allow Enter+Ctrl/Cmd to quickly add delta
             const deltaInput = document.getElementById('delta_note');
             if (deltaInput) {
