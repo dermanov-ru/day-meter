@@ -43,9 +43,7 @@
                                 <!-- Day Note -->
                                 @if($dayEntry->day_note)
                                     <div class="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                        <p class="text-gray-700 leading-relaxed">
-                                            {{ $dayEntry->day_note }}
-                                        </p>
+                                        <pre class="text-gray-700 leading-relaxed whitespace-pre-wrap break-words font-sans">{{ $dayEntry->day_note }}</pre>
                                     </div>
                                 @endif
 
