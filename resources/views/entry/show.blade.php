@@ -38,18 +38,26 @@
                             <label for="delta_note" class="block text-sm font-medium text-gray-700 mb-2">
                                 {{ __('Быстрое добавление') }}
                             </label>
-                            <div class="flex gap-2">
-                                <textarea id="delta_note"
-                                          rows="2"
-                                          placeholder="{{ __('Запишите мысль...') }}"
-                                          class="flex-1 rounded-md border-gray-300 shadow-sm"></textarea>
+                            <textarea id="delta_note"
+                                      rows="2"
+                                      placeholder="{{ __('Запишите мысль...') }}"
+                                      class="w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                            <div class="flex gap-2 mt-2 justify-end">
+                                <button type="button"
+                                        id="voice-input-btn"
+                                        onclick="toggleVoiceInput()"
+                                        class="px-3 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors duration-200"
+                                        style="display: none;"
+                                        title="Голосовой ввод">
+                                    🎤
+                                </button>
                                 <button type="button"
                                         onclick="addDelta()"
-                                        class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 whitespace-nowrap self-start">
+                                        class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
                                     {{ __('Добавить') }}
                                 </button>
                             </div>
-                            <p class="text-xs text-gray-500 mt-1">{{ __('Быстрая фиксация мысли с временной отметкой') }}</p>
+                            <p class="text-xs text-gray-500 mt-2">{{ __('Быстрая фиксация мысли с временной отметкой') }}</p>
                         </div>
 
                         <div class="space-y-4">
@@ -329,15 +337,109 @@
             submitFormAsync(form);
         }
 
+        // Web Speech API for voice input
+        let recognition = null;
+        let isListening = false;
+        let interimTranscript = '';
+        let finalTranscript = '';
+
+        function initVoiceInput() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (!SpeechRecognition) {
+                console.log('Web Speech API не поддерживается');
+                return;
+            }
+            
+            const voiceBtn = document.getElementById('voice-input-btn');
+            if (voiceBtn) {
+                voiceBtn.style.display = 'block';
+            }
+            
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'ru-RU';
+            
+            recognition.onstart = function() {
+                isListening = true;
+                updateVoiceButtonState();
+            };
+            
+            recognition.onresult = function(event) {
+                interimTranscript = '';
+                
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript + ' ';
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+                
+                const deltaInput = document.getElementById('delta_note');
+                if (deltaInput) {
+                    deltaInput.value = finalTranscript + interimTranscript;
+                }
+            };
+            
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+                isListening = false;
+                updateVoiceButtonState();
+            };
+            
+            recognition.onend = function() {
+                isListening = false;
+                updateVoiceButtonState();
+            };
+        }
+        
+        function toggleVoiceInput() {
+            if (!recognition) {
+                initVoiceInput();
+            }
+            
+            if (isListening) {
+                recognition.stop();
+                finalTranscript = document.getElementById('delta_note').value;
+                isListening = false;
+            } else {
+                finalTranscript = document.getElementById('delta_note').value;
+                interimTranscript = '';
+                recognition.start();
+            }
+            
+            updateVoiceButtonState();
+        }
+        
+        function updateVoiceButtonState() {
+            const voiceBtn = document.getElementById('voice-input-btn');
+            if (!voiceBtn) return;
+            
+            if (isListening) {
+                voiceBtn.classList.remove('bg-gray-300', 'text-gray-700', 'hover:bg-gray-400');
+                voiceBtn.classList.add('bg-red-500', 'text-white', 'hover:bg-red-600', 'animate-pulse');
+            } else {
+                voiceBtn.classList.remove('bg-red-500', 'text-white', 'hover:bg-red-600', 'animate-pulse');
+                voiceBtn.classList.add('bg-gray-300', 'text-gray-700', 'hover:bg-gray-400');
+            }
+        }
+
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize sliders
             document.querySelectorAll('input[type="range"].slider').forEach(slider => {
                 updateSliderBackground(slider);
             });
-
+            
             initializeAccordions();
-
+            
+            // Initialize voice input
+            initVoiceInput();
+            
             // Allow Enter+Ctrl/Cmd to quickly add delta
             const deltaInput = document.getElementById('delta_note');
             if (deltaInput) {
