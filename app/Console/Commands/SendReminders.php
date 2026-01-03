@@ -20,7 +20,7 @@ class SendReminders extends Command
     /**
      * The console command description.
      *
-     * @var string
+     * @var stringAlready has entry for today
      */
     protected $description = 'Send push notifications to users based on their reminder settings';
 
@@ -62,20 +62,6 @@ class SendReminders extends Command
             }
 
             $this->line("[User {$user->id}] Time matches ({$setting->remind_time}), processing reminder");
-
-            // Check if user already has an entry for today (in their timezone)
-            $today = now($setting->timezone)->toDateString();
-            $hasEntryToday = DayEntry::where('user_id', $user->id)
-                ->where('date', $today)
-                ->exists();
-
-            if ($hasEntryToday) {
-                $this->line("[User {$user->id}] Already has entry for today ({$today}), skipping");
-                $skippedCount++;
-                continue;
-            }
-
-            $this->line("[User {$user->id}] No entry for today, preparing to send reminders");
 
             // Get active subscriptions
             $activeSubscriptions = $user->pushSubscriptions()
