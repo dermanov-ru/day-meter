@@ -10,69 +10,17 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/images/icon-192.png",
+      "src": "/AppImages/android/android-launchericon-192-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/images/icon-512.png",
+      "src": "/AppImages/android/android-launchericon-512-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
-    },
-    {
-      "src": "/images/icon-maskable-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/images/icon-maskable-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/images/screenshot-540x720.png",
-      "sizes": "540x720",
-      "type": "image/png",
-      "form_factor": "narrow"
-    },
-    {
-      "src": "/images/screenshot-1280x720.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
-    }
-  ],
-  "categories": ["productivity", "lifestyle"],
-  "shortcuts": [
-    {
-      "name": "Ввод данных",
-      "short_name": "Ввод",
-      "description": "Перейти на страницу ввода данных за день",
-      "url": "/entry",
-      "icons": [
-        {
-          "src": "/images/shortcut-entry.png",
-          "sizes": "96x96"
-        }
-      ]
-    },
-    {
-      "name": "Летопись",
-      "short_name": "Летопись",
-      "description": "Посмотреть историю записей",
-      "url": "/chronicle",
-      "icons": [
-        {
-          "src": "/images/shortcut-chronicle.png",
-          "sizes": "96x96"
-        }
-      ]
-    }
-  ]
+  "categories": ["productivity", "lifestyle"]
 }
