@@ -764,6 +764,80 @@
         </div>
     </section>
 
+    <!-- Быстрый ввод и голосовой ввод -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Быстрое добавление заметок</h2>
+            <p class="section-subtitle">Фиксируйте мысли в течение дня без необходимости редактирования</p>
+
+            <div class="two-column">
+                <div class="column-text">
+                    <h3>⚡ Дельта-ввод (быстрое добавление)</h3>
+                    <p>На странице ввода есть отдельное компактное поле для коротких заметок. Каждая записанная мысль автоматически попадает в основную заметку дня с временной отметкой:</p>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Отдельное поле для быстрого ввода</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">При добавлении текст присоединяется к основной заметке</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Автоматическая временная отметка (ЧЧ:МИ)</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Поле очищается и остаётся в фокусе для новых записей</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Идеально для фиксации событий в течение дня</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1.5rem;"><strong>Пример формата:</strong> <br />— 14:30<br />Обед с коллегами, обсудили проект</p>
+                </div>
+                <div class="column-visual">
+                    <div class="visual-box">⏱️</div>
+                </div>
+            </div>
+
+            <div class="two-column reverse" style="margin-top: 3rem;">
+                <div class="column-text">
+                    <h3>🎤 Голосовой ввод (Web Speech API)</h3>
+                    <p>Рядом с полем быстрого добавления находится кнопка микрофона. Нажмите — и просто диктуйте:</p>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Распознавание речи на русском языке</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Текст обновляется в реальном времени</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">После завершения диктовки текст остаётся в поле</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Можно отредактировать перед добавлением</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Особенно удобно на мобильных устройствах</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1.5rem;"><strong>Работает только в браузерах с поддержкой Web Speech API.</strong> На старых браузерах кнопка микрофона просто не видна.</p>
+                </div>
+                <div class="column-visual">
+                    <div class="visual-box">🗣️</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Хроника -->
     <section class="section">
         <div class="container">
