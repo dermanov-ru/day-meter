@@ -33,6 +33,23 @@
 
                         <input type="hidden" name="date" value="{{ $date }}">
 
+                        <!-- Day Note Section at Top -->
+                        <div class="mb-8 pb-6 border-b border-gray-200">
+                            <label for="day_note" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ __('Коротко о дне') }}
+                            </label>
+                            <textarea name="day_note"
+                                      id="day_note"
+                                      rows="4"
+                                      maxlength="1000"
+                                      placeholder="{{ __('Что было важного / что запомнилось / почему так получилось') }}"
+                                      class="block w-full rounded-md border-gray-300 shadow-sm">{{ $dayNote ?? '' }}</textarea>
+                            <p class="text-xs text-gray-500 mt-1">{{ __('Максимум 1000 символов') }}</p>
+                            @error('day_note')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <div class="space-y-4">
                             @foreach ($categoriesWithMetrics as $category)
                                 @if ($category->metrics->count() > 0)
@@ -109,28 +126,19 @@
                             @endforeach
                         </div>
 
-                        <!-- Day Note Section -->
-                        <div class="mt-8 pt-8 border-t border-gray-200">
-                            <label for="day_note" class="block text-sm font-medium text-gray-700 mb-2">
-                                {{ __('Коротко о дне') }}
-                            </label>
-                            <textarea name="day_note"
-                                      id="day_note"
-                                      rows="4"
-                                      maxlength="1000"
-                                      placeholder="{{ __('Что было важного / что запомнилось / почему так получилось') }}"
-                                      class="block w-full rounded-md border-gray-300 shadow-sm">{{ $dayNote ?? '' }}</textarea>
-                            <p class="text-xs text-gray-500 mt-1">{{ __('Максимум 1000 символов') }}</p>
-                            @error('day_note')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="mt-6">
+                        <!-- Desktop Save Button -->
+                        <div class="mt-8 pt-8 border-t border-gray-200 hidden sm:block">
                             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                                 {{ __('Save') }}
                             </button>
                         </div>
+
+                        <!-- Mobile Floating Save Button -->
+                        <button type="submit" class="fixed bottom-8 right-8 sm:hidden w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V3"></path>
+                            </svg>
+                        </button>
                     </form>
                 </div>
             </div>
