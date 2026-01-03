@@ -56,14 +56,22 @@
                                                                @if (isset($metricValues[$metric->id]) && $metricValues[$metric->id]) checked @endif
                                                                class="mt-2">
                                                     @else
-                                                        <input type="number"
-                                                               id="metric_{{ $metric->id }}"
-                                                               name="metric_{{ $metric->id }}"
-                                                               min="{{ $metric->min_value }}"
-                                                               max="{{ $metric->max_value }}"
-                                                               value="{{ $metricValues[$metric->id] ?? '' }}"
-                                                               class="mt-2 block w-full rounded-md border-gray-300 shadow-sm"
-                                                               required>
+                                                        <div class="mt-2 space-y-2">
+                                                            <input type="range"
+                                                                   id="metric_{{ $metric->id }}"
+                                                                   name="metric_{{ $metric->id }}"
+                                                                   min="{{ $metric->min_value }}"
+                                                                   max="{{ $metric->max_value }}"
+                                                                   value="{{ $metricValues[$metric->id] ?? ($metric->min_value + ($metric->max_value - $metric->min_value) / 2) }}"
+                                                                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                                                                   oninput="updateSliderValue('metric_{{ $metric->id }}')"
+                                                                   required>
+                                                            <div class="flex justify-between text-xs text-gray-500 px-1">
+                                                                <span>{{ $metric->min_value }}</span>
+                                                                <span id="value_metric_{{ $metric->id }}" class="font-semibold text-gray-700">{{ $metricValues[$metric->id] ?? ($metric->min_value + ($metric->max_value - $metric->min_value) / 2) }}</span>
+                                                                <span>{{ $metric->max_value }}</span>
+                                                            </div>
+                                                        </div>
                                                     @endif
 
                                                     @error("metric_{{ $metric->id }}")
@@ -116,4 +124,75 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function updateSliderValue(sliderId) {
+            const slider = document.getElementById(sliderId);
+            const valueDisplay = document.getElementById('value_' + sliderId);
+            if (valueDisplay) {
+                valueDisplay.textContent = slider.value;
+            }
+            updateSliderBackground(slider);
+        }
+
+        function updateSliderBackground(slider) {
+            const value = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+            slider.style.background = `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${value}%, #e5e7eb ${value}%, #e5e7eb 100%)`;
+        }
+
+        // Initialize sliders on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('input[type="range"].slider').forEach(slider => {
+                updateSliderBackground(slider);
+            });
+        });
+    </script>
+
+    <style>
+        /* Styling for range slider */
+        input[type="range"].slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input[type="range"].slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background 0.15s ease-in-out;
+        }
+
+        input[type="range"].slider::-webkit-slider-thumb:hover {
+            background: #2563eb;
+        }
+
+        input[type="range"].slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background 0.15s ease-in-out;
+        }
+
+        input[type="range"].slider::-moz-range-thumb:hover {
+            background: #2563eb;
+        }
+
+        input[type="range"].slider::-moz-range-track {
+            background: transparent;
+            border: none;
+        }
+    </style>
 </x-app-layout>
