@@ -35,6 +35,9 @@
                     <x-nav-link :href="route('settings.export')" :active="request()->routeIs('settings.export*')">
                         {{ __('Экспорт') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('reminders.page')" :active="request()->routeIs('reminders.*')">
+                        {{ __('Напоминания') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -104,6 +107,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('settings.export')" :active="request()->routeIs('settings.export*')">
                 {{ __('Экспорт') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('reminders.page')" :active="request()->routeIs('reminders.*')">
+                {{ __('Напоминания') }}
             </x-responsive-nav-link>
         </div>
 

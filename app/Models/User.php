@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -44,5 +46,35 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the user's push subscriptions.
+     */
+    public function pushSubscriptions(): HasMany
+    {
+        return $this->hasMany(PushSubscription::class);
+    }
+
+    /**
+     * Get the user's notification settings.
+     */
+    public function notificationSetting(): HasOne
+    {
+        return $this->hasOne(NotificationSetting::class);
+    }
+
+    /**
+     * Get or create the user's notification settings.
+     */
+    public function getOrCreateNotificationSetting(): NotificationSetting
+    {
+        return $this->notificationSetting()->firstOrCreate([
+            'user_id' => $this->id,
+        ], [
+            'enabled' => false,
+            'remind_time' => '09:00',
+            'timezone' => 'Europe/Moscow',
+        ]);
     }
 }

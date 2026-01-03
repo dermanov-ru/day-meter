@@ -3,6 +3,7 @@
 use App\Http\Controllers\ChronicleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EntryController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatsController;
@@ -39,6 +40,14 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/settings/export', [SettingsController::class, 'export'])->name('settings.export');
     Route::post('/settings/export', [SettingsController::class, 'generateExport'])->name('settings.export.generate');
+
+    Route::get('/reminders', [NotificationController::class, 'remindersPage'])->name('reminders.page');
+
+    // Notification API endpoints
+    Route::post('/api/notifications/subscribe', [NotificationController::class, 'subscribe'])->name('notifications.subscribe');
+    Route::post('/api/notifications/unsubscribe', [NotificationController::class, 'unsubscribe'])->name('notifications.unsubscribe');
+    Route::get('/api/notifications/settings', [NotificationController::class, 'getSettings'])->name('notifications.settings.get');
+    Route::post('/api/notifications/settings', [NotificationController::class, 'updateSettings'])->name('notifications.settings.update');
 });
 
 require __DIR__.'/auth.php';

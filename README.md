@@ -209,6 +209,12 @@ DayMeter подойдёт тем, кто:
 Архитектура готова к аккуратному расширению без ломки основы.
 
 
+#  Cron
+
+```
+* * * * * cd /path/to/project && ./vendor/laravel/sail/bin/sail artisan schedule:run >> /dev/null 2>&1
+```
+
 # Tools
 
 ```
@@ -217,4 +223,5 @@ DayMeter подойдёт тем, кто:
 ./vendor/bin/sail npm run build
 
 ./vendor/bin/sail artisan chronicle:export --from=2026-01-01 --to=2027-01-01 --user-id=2
+
 ```
