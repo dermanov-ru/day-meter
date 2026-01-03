@@ -162,4 +162,6 @@ DayMeter — это **инструмент фиксации и наблюден�
 ./vendor/laravel/sail/bin/sail up -d
 ./vendor/laravel/sail/bin/sail artisan migrate
 ./vendor/bin/sail npm run build
+
+./vendor/bin/sail artisan chronicle:export --from=2026-01-01 --to=2027-01-01 --user-id=2
 ```

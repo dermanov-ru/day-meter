@@ -36,6 +36,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/settings/categories', [SettingsController::class, 'storeCategory'])->name('settings.categories.store');
     Route::patch('/settings/categories/{category}', [SettingsController::class, 'updateCategory'])->name('settings.categories.update');
     Route::delete('/settings/categories/{category}', [SettingsController::class, 'deleteCategory'])->name('settings.categories.delete');
+
+    Route::get('/settings/export', [SettingsController::class, 'export'])->name('settings.export');
+    Route::post('/settings/export', [SettingsController::class, 'generateExport'])->name('settings.export.generate');
 });
 
 require __DIR__.'/auth.php';

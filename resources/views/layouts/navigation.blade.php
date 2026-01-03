@@ -32,6 +32,9 @@
                     <x-nav-link :href="route('settings.metrics')" :active="request()->routeIs('settings.*')">
                         {{ __('Настройки') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('settings.export')" :active="request()->routeIs('settings.export*')">
+                        {{ __('Экспорт') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -98,6 +101,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('settings.metrics')" :active="request()->routeIs('settings.*')">
                 {{ __('Настройки') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('settings.export')" :active="request()->routeIs('settings.export*')">
+                {{ __('Экспорт') }}
             </x-responsive-nav-link>
         </div>
 

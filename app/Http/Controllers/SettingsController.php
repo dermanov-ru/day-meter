@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Metric;
 use App\Models\MetricCategory;
+use App\Services\ChronicleExportService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class SettingsController extends Controller
 {
@@ -178,5 +181,49 @@ class SettingsController extends Controller
 
         return redirect()->route('settings.categories')
             ->with('status', "Категория '{$title}' удалена успешно");
+    }
+
+    /**
+     * Show export page.
+     */
+    public function export()
+    {
+        $from = Carbon::now()->subMonth()->startOfMonth();
+        $to = Carbon::now()->subMonth()->endOfMonth();
+
+        return view('settings.export', [
+            'from' => $from->toDateString(),
+            'to' => $to->toDateString(),
+        ]);
+    }
+
+    /**
+     * Generate chronicle export.
+     */
+    public function generateExport(Request $request, ChronicleExportService $exportService)
+    {
+        $validated = $request->validate([
+            'from' => 'required|date_format:Y-m-d',
+            'to' => 'required|date_format:Y-m-d|after_or_equal:from',
+        ]);
+
+        $user = Auth::user();
+        $from = Carbon::createFromFormat('Y-m-d', $validated['from']);
+        $to = Carbon::createFromFormat('Y-m-d', $validated['to']);
+
+        try {
+            $content = $exportService->generateContent($user, $from, $to);
+            $filename = "chronicle_{$user->id}_{$from->format('Y-m-d')}_{$to->format('Y-m-d')}.md";
+
+            return view('settings.export', [
+                'from' => $validated['from'],
+                'to' => $validated['to'],
+                'content' => $content,
+                'filename' => $filename,
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Export failed: ' . $e->getMessage());
+        }
     }
 }
