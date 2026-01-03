@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <!-- Desktop: link to dashboard -->
-                    <a href="{{ route('dashboard') }}" class="hidden sm:block">
+                    <a href="{{ route('entry.show') }}" class="hidden sm:block">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                     <!-- Mobile: link to entry -->
@@ -17,14 +17,14 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
                     <x-nav-link :href="route('entry.show')" :active="request()->routeIs('entry.*')">
-                        {{ __('Entry') }}
+                        {{ __('Записать') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        {{ __('Сводка') }}
                     </x-nav-link>
                     <x-nav-link :href="route('stats.month')" :active="request()->routeIs('stats.*')">
-                        {{ __('Stats') }}
+                        {{ __('Графики') }}
                     </x-nav-link>
                     <x-nav-link :href="route('chronicle.index')" :active="request()->routeIs('chronicle.*')">
                         {{ __('Летопись') }}
