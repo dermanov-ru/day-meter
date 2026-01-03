@@ -33,21 +33,23 @@
 
                         <input type="hidden" name="date" value="{{ $date }}">
 
-                        <!-- Day Note Section at Top -->
+                        <!-- Quick Delta Input Section -->
                         <div class="mb-8 pb-6 border-b border-gray-200">
-                            <label for="day_note" class="block text-sm font-medium text-gray-700 mb-2">
-                                {{ __('Коротко о дне') }}
+                            <label for="delta_note" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ __('Быстрое добавление') }}
                             </label>
-                            <textarea name="day_note"
-                                      id="day_note"
-                                      rows="4"
-                                      maxlength="1000"
-                                      placeholder="{{ __('Что было важного / что запомнилось / почему так получилось') }}"
-                                      class="block w-full rounded-md border-gray-300 shadow-sm">{{ $dayNote ?? '' }}</textarea>
-                            <p class="text-xs text-gray-500 mt-1">{{ __('Максимум 1000 символов') }}</p>
-                            @error('day_note')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
+                            <div class="flex gap-2">
+                                <textarea id="delta_note"
+                                          rows="2"
+                                          placeholder="{{ __('Запишите мысль...') }}"
+                                          class="flex-1 rounded-md border-gray-300 shadow-sm"></textarea>
+                                <button type="button"
+                                        onclick="addDelta()"
+                                        class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 whitespace-nowrap self-start">
+                                    {{ __('Добавить') }}
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">{{ __('Быстрая фиксация мысли с временной отметкой') }}</p>
                         </div>
 
                         <div class="space-y-4">
@@ -126,8 +128,25 @@
                             @endforeach
                         </div>
 
+                        <!-- Main Day Note Section -->
+                        <div class="mt-8 pt-8 border-t border-gray-200">
+                            <label for="day_note" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ __('Заметка за день') }}
+                            </label>
+                            <textarea name="day_note"
+                                      id="day_note"
+                                      rows="10"
+                                      maxlength="1000"
+                                      placeholder="{{ __('Что было важного / что запомнилось / почему так получилось') }}"
+                                      class="block w-full rounded-md border-gray-300 shadow-sm font-mono text-sm">{{ $dayNote ?? '' }}</textarea>
+                            <p class="text-xs text-gray-500 mt-1">{{ __('Максимум 1000 символов') }}</p>
+                            @error('day_note')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <!-- Desktop Save Button -->
-                        <div class="mt-8 pt-8 border-t border-gray-200 hidden sm:block">
+                        <div class="mt-6 hidden sm:block">
                             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                                 {{ __('Save') }}
                             </button>
@@ -242,13 +261,63 @@
             });
         }
 
+        function addDelta() {
+            const deltaInput = document.getElementById('delta_note');
+            const mainNote = document.getElementById('day_note');
+            const text = deltaInput.value.trim();
+            
+            if (!text) return;
+            
+            // Get current time
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const timestamp = `${hours}:${minutes}`;
+            
+            // Format: — HH:MM\n<text>
+            const delta = `— ${timestamp}\n${text}`;
+            
+            // Save current scroll position
+            const scrollBefore = mainNote.scrollTop;
+            
+            // Add delta to main note
+            if (mainNote.value) {
+                mainNote.value += '\n\n' + delta;
+            } else {
+                mainNote.value = delta;
+            }
+            
+            // Restore scroll position and clear delta input
+            mainNote.scrollTop = scrollBefore;
+            deltaInput.value = '';
+            deltaInput.focus();
+            
+            // Auto-submit form
+            const form = mainNote.closest('form');
+            if (form) {
+                form.submit();
+            }
+        }
+
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize sliders
             document.querySelectorAll('input[type="range"].slider').forEach(slider => {
                 updateSliderBackground(slider);
             });
             
             initializeAccordions();
+            
+            // Allow Enter+Ctrl/Cmd to quickly add delta
+            const deltaInput = document.getElementById('delta_note');
+            if (deltaInput) {
+                deltaInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                        e.preventDefault();
+                        addDelta();
+                    }
+                });
+            }
         });
     </script>
 
