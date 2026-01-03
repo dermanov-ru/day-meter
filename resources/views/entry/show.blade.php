@@ -311,7 +311,14 @@
 
         function submitFormAsync(form) {
             const formData = new FormData(form);
-            const csrfToken = document.querySelector('input[name="_token"]').value;
+            const csrfTokenInput = document.querySelector('input[name="_token"]');
+            const csrfToken = csrfTokenInput ? csrfTokenInput.value : '';
+            
+            if (!csrfToken) {
+                console.error('CSRF token not found');
+                alert('Ошибка: CSRF токен не найден. Перезагрузите страницу.');
+                return;
+            }
 
             fetch(form.action, {
                 method: 'POST',
@@ -321,15 +328,26 @@
                 },
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
+                console.log('Save response:', data);
                 if (data.success) {
                     showSuccessToast();
+                } else {
+                    console.warn('Response not marked as success:', data);
                 }
             })
             .catch(error => {
                 console.error('Error saving:', error);
-                alert('Ошибка при сохранении. Пожалуйста, попробуйте ещё раз.');
+                // Don't show alert on mobile to avoid interrupting user
+                if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    alert('Ошибка при сохранении. Пожалуйсте, попробуйте ещё раз.');
+                }
             });
         }
 
