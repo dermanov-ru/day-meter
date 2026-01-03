@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Minishlink\WebPush\WebPush;
+use Minishlink\WebPush\VAPID;
 
 return new class extends Migration
 {
@@ -18,9 +18,9 @@ return new class extends Migration
             return; // Keys already exist, skip
         }
 
-        // Generate VAPID keys using WebPush library
+        // Generate VAPID keys using VAPID library
         try {
-            $keys = WebPush::generateVapidKeys();
+            $keys = VAPID::createVapidKeys();
             $publicKey = $keys['publicKey'];
             $privateKey = $keys['privateKey'];
         } catch (\Exception $e) {
