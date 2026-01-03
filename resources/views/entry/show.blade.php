@@ -340,8 +340,8 @@
         // Web Speech API for voice input
         let recognition = null;
         let isListening = false;
-        let interimTranscript = '';
         let finalTranscript = '';
+        let interimTranscript = '';
 
         function initVoiceInput() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -357,7 +357,11 @@
             }
             
             recognition = new SpeechRecognition();
-            recognition.continuous = true;
+            
+            // Detect mobile device
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            
+            recognition.continuous = !isMobile;  // Disable continuous on mobile
             recognition.interimResults = true;
             recognition.lang = 'ru-RU';
             
@@ -367,18 +371,23 @@
             };
             
             recognition.onresult = function(event) {
+                // Reset interim transcript each time
                 interimTranscript = '';
                 
+                // Process results correctly
                 for (let i = event.resultIndex; i < event.results.length; i++) {
                     const transcript = event.results[i][0].transcript;
                     
+                    // Only add final results to finalTranscript (don't duplicate)
                     if (event.results[i].isFinal) {
                         finalTranscript += transcript + ' ';
                     } else {
+                        // Interim results are temporary
                         interimTranscript += transcript;
                     }
                 }
                 
+                // Update field with final + interim (this prevents repetition)
                 const deltaInput = document.getElementById('delta_note');
                 if (deltaInput) {
                     deltaInput.value = finalTranscript + interimTranscript;
@@ -404,9 +413,12 @@
             
             if (isListening) {
                 recognition.stop();
+                // Save current value as final when stopping
                 finalTranscript = document.getElementById('delta_note').value;
+                interimTranscript = '';
                 isListening = false;
             } else {
+                // Start fresh with current text as base
                 finalTranscript = document.getElementById('delta_note').value;
                 interimTranscript = '';
                 recognition.start();
