@@ -30,7 +30,7 @@
 
                         <div>
                             <label for="key" class="block text-sm font-medium text-gray-700">
-                                {{ __('Ключ (Key)') }}
+                                {{ __('Ключ (Key) - автозаполнение') }}
                             </label>
                             <input type="text"
                                    id="key"
@@ -39,6 +39,7 @@
                                    required
                                    @error('key') is-invalid @enderror
                                    value="{{ old('key') }}">
+                            <p class="text-xs text-gray-500 mt-1">{{ __('Будет автоматически заполнен исходя из названия') }}</p>
                             @error('key')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -54,7 +55,8 @@
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                                    required
                                    @error('title') is-invalid @enderror
-                                   value="{{ old('title') }}">
+                                   value="{{ old('title') }}"
+                                   onchange="autoGenerateKey('title', 'key')">
                             @error('title')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -128,6 +130,21 @@
                                 @endforeach
                             </select>
                             @error('metric_category_id')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="sort_order" class="block text-sm font-medium text-gray-700">
+                                {{ __('Порядок сортировки') }}
+                            </label>
+                            <input type="number"
+                                   id="sort_order"
+                                   name="sort_order"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                   @error('sort_order') is-invalid @enderror
+                                   value="{{ old('sort_order', $nextSort ?? 10) }}">
+                            @error('sort_order')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
@@ -230,21 +247,32 @@
                                                             </option>
                                                         @endforeach
                                                     </select>
-                                                </div>
+                                </div>
 
-                                                <div class="flex items-center">
-                                                    <input type="checkbox"
-                                                           id="edit_active_{{ $metric->id }}"
-                                                           name="is_active"
-                                                           value="1"
-                                                           @checked($metric->is_active)
-                                                           class="rounded">
-                                                    <label for="edit_active_{{ $metric->id }}" class="ml-2 text-sm text-gray-700">
-                                                        {{ __('Активна') }}
-                                                    </label>
-                                                </div>
+                                <div>
+                                    <label for="edit_sort_order_{{ $metric->id }}" class="block text-sm font-medium text-gray-700">
+                                        {{ __('Порядок сортировки') }}
+                                    </label>
+                                    <input type="number"
+                                           id="edit_sort_order_{{ $metric->id }}"
+                                           name="sort_order"
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                           value="{{ $metric->sort_order }}">
+                                </div>
 
-                                                <div class="flex gap-2">
+                                <div class="flex items-center">
+                                    <input type="checkbox"
+                                           id="edit_active_{{ $metric->id }}"
+                                           name="is_active"
+                                           value="1"
+                                           @checked($metric->is_active)
+                                           class="rounded">
+                                    <label for="edit_active_{{ $metric->id }}" class="ml-2 text-sm text-gray-700">
+                                        {{ __('Активна') }}
+                                    </label>
+                                </div>
+
+                                <div class="flex gap-2">
                                                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">
                                                         {{ __('Сохранить') }}
                                                     </button>
@@ -267,6 +295,31 @@
     </div>
 
     <script>
+        // Cyrillic to Latin transliteration map
+        const cyrillicMap = {
+            'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
+            'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
+            'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+            'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch',
+            'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+        };
+
+        function transliterate(text) {
+            return text.toLowerCase().split('').map(char => cyrillicMap[char] || char).join('');
+        }
+
+        function autoGenerateKey(titleId, keyId) {
+            const titleInput = document.getElementById(titleId);
+            const keyInput = document.getElementById(keyId);
+            if (titleInput && keyInput && titleInput.value) {
+                const slug = transliterate(titleInput.value)
+                    .replace(/[^a-z0-9]+/g, '_')
+                    .replace(/^_+|_+$/g, '')
+                    .toLowerCase();
+                keyInput.value = slug;
+            }
+        }
+
         function toggleScaleFields(type) {
             const scaleFields = document.getElementById('scale-fields');
             if (type === 'scale') {

@@ -24,10 +24,12 @@ class SettingsController extends Controller
             ->get();
 
         $categories = MetricCategory::active()->ordered()->get();
+        $maxMetricSort = Metric::max('sort_order') ?? 0;
 
         return view('settings.metrics', [
             'categoriesWithMetrics' => $categoriesWithMetrics,
             'categories' => $categories,
+            'nextSort' => $maxMetricSort + 10,
         ]);
     }
 
@@ -43,10 +45,11 @@ class SettingsController extends Controller
             'min_value' => 'nullable|integer|required_if:type,scale|min:0',
             'max_value' => 'nullable|integer|required_if:type,scale|gt:min_value',
             'metric_category_id' => 'required|exists:metric_categories,id',
+            'sort_order' => 'sometimes|integer|min:0',
         ]);
 
-        // Get the highest sort_order for new metrics
-        $maxSort = Metric::max('sort_order') ?? 0;
+        // Get the highest sort_order for new metrics if not provided
+        $sortOrder = $validated['sort_order'] ?? (Metric::max('sort_order') ?? 0) + 10;
 
         $metric = Metric::create([
             'key' => $validated['key'],
@@ -56,7 +59,7 @@ class SettingsController extends Controller
             'max_value' => $validated['max_value'] ?? null,
             'metric_category_id' => $validated['metric_category_id'],
             'is_active' => true,
-            'sort_order' => $maxSort + 1,
+            'sort_order' => $sortOrder,
         ]);
 
         return redirect()->route('settings.metrics')
@@ -92,9 +95,11 @@ class SettingsController extends Controller
     public function categories()
     {
         $categories = MetricCategory::ordered()->get();
+        $maxCategorySort = MetricCategory::max('sort_order') ?? 0;
 
         return view('settings.categories', [
             'categories' => $categories,
+            'nextSort' => $maxCategorySort + 10,
         ]);
     }
 

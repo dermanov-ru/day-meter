@@ -36,7 +36,7 @@
 
                         <div>
                             <label for="key" class="block text-sm font-medium text-gray-700">
-                                {{ __('Ключ (Key)') }}
+                                {{ __('Ключ (Key) - автозаполнение') }}
                             </label>
                             <input type="text"
                                    id="key"
@@ -45,6 +45,7 @@
                                    required
                                    @error('key') is-invalid @enderror
                                    value="{{ old('key') }}">
+                            <p class="text-xs text-gray-500 mt-1">{{ __('Будет автоматически заполнен исходя из названия') }}</p>
                             @error('key')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -60,7 +61,8 @@
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                                    required
                                    @error('title') is-invalid @enderror
-                                   value="{{ old('title') }}">
+                                   value="{{ old('title') }}"
+                                   onchange="autoGenerateKey('title', 'key')">
                             @error('title')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -75,7 +77,7 @@
                                    name="sort_order"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                                    @error('sort_order') is-invalid @enderror
-                                   value="{{ old('sort_order', 0) }}">
+                                   value="{{ old('sort_order', $nextSort ?? 10) }}">
                             @error('sort_order')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -262,6 +264,31 @@
     </div>
 
     <script>
+        // Cyrillic to Latin transliteration map
+        const cyrillicMap = {
+            'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
+            'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
+            'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+            'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch',
+            'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+        };
+
+        function transliterate(text) {
+            return text.toLowerCase().split('').map(char => cyrillicMap[char] || char).join('');
+        }
+
+        function autoGenerateKey(titleId, keyId) {
+            const titleInput = document.getElementById(titleId);
+            const keyInput = document.getElementById(keyId);
+            if (titleInput && keyInput && titleInput.value) {
+                const slug = transliterate(titleInput.value)
+                    .replace(/[^a-z0-9]+/g, '_')
+                    .replace(/^_+|_+$/g, '')
+                    .toLowerCase();
+                keyInput.value = slug;
+            }
+        }
+
         function showEditForm(categoryId) {
             document.getElementById('edit-form-' + categoryId).classList.remove('hidden');
         }
