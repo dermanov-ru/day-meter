@@ -143,11 +143,9 @@
                             </label>
                             <textarea name="day_note"
                                       id="day_note"
-                                      rows="20"
-                                      maxlength="1000"
+                                      rows="10"
                                       placeholder="{{ __('Что было важного / что запомнилось / почему так получилось') }}"
                                       class="block w-full rounded-md border-gray-300 shadow-sm font-mono text-sm">{{ $dayNote ?? '' }}</textarea>
-                            <p class="text-xs text-gray-500 mt-1">{{ __('Максимум 1000 символов') }}</p>
                             @error('day_note')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror

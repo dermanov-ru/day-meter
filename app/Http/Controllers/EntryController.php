@@ -128,7 +128,7 @@ class EntryController extends Controller
             $rules["metric_{$metric->id}_comment"] = 'sometimes|nullable|string|max:500';
         }
         $rules['date'] = 'sometimes'; // Allow date, we already validated it
-        $rules['day_note'] = 'sometimes|nullable|string|max:1000';
+        $rules['day_note'] = 'sometimes|nullable|string';
 
         $validated = $request->validate($rules);
 
