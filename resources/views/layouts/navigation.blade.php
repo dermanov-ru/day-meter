@@ -29,6 +29,9 @@
                     <x-nav-link :href="route('chronicle.index')" :active="request()->routeIs('chronicle.*')">
                         {{ __('Летопись') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('settings.metrics')" :active="request()->routeIs('settings.*')">
+                        {{ __('Настройки') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -92,6 +95,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('chronicle.index')" :active="request()->routeIs('chronicle.*')">
                 {{ __('Летопись') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('settings.metrics')" :active="request()->routeIs('settings.*')">
+                {{ __('Настройки') }}
             </x-responsive-nav-link>
         </div>
 

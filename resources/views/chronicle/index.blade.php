@@ -49,16 +49,37 @@
                                     </div>
                                 @endif
 
-                                <!-- Metric Comments Only -->
+                                <!-- Metric Comments Grouped by Category -->
                                 @php
                                     $commentsWithMetrics = $dayEntry->values->filter(fn($v) => $v->comment)->values();
+                                    // Group comments by category
+                                    $commentsByCategory = [];
+                                    foreach ($commentsWithMetrics as $value) {
+                                        if ($value->metric && $value->metric->category) {
+                                            $catId = $value->metric->category->id;
+                                            if (!isset($commentsByCategory[$catId])) {
+                                                $commentsByCategory[$catId] = [
+                                                    'category' => $value->metric->category,
+                                                    'values' => []
+                                                ];
+                                            }
+                                            $commentsByCategory[$catId]['values'][] = $value;
+                                        }
+                                    }
                                 @endphp
                                 @if($commentsWithMetrics->count() > 0)
-                                    <div class="text-sm text-gray-600 space-y-2">
-                                        @foreach($commentsWithMetrics as $value)
-                                            <div class="pl-3 border-l-2 border-gray-300">
-                                                <div class="font-medium text-gray-700">{{ $value->metric->title }}</div>
-                                                <div class="italic text-gray-600">{{ $value->comment }}</div>
+                                    <div class="text-sm text-gray-600 space-y-4">
+                                        @foreach($commentsByCategory as $categoryGroup)
+                                            <div>
+                                                <h4 class="text-xs font-semibold text-gray-700 mb-2">{{ $categoryGroup['category']->title }}</h4>
+                                                <div class="space-y-2">
+                                                    @foreach($categoryGroup['values'] as $value)
+                                                        <div class="pl-3 border-l-2 border-gray-300">
+                                                            <div class="font-medium text-gray-700">{{ $value->metric->title }}</div>
+                                                            <div class="italic text-gray-600">{{ $value->comment }}</div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
                                             </div>
                                         @endforeach
                                     </div>

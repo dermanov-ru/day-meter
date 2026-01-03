@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Metric extends Model
+class MetricCategory extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -16,24 +16,22 @@ class Metric extends Model
     protected $fillable = [
         'key',
         'title',
-        'type',
-        'min_value',
-        'max_value',
-        'is_active',
         'sort_order',
-        'metric_category_id',
+        'is_active',
+        'is_user_defined',
+        'created_by_user_id',
     ];
 
     /**
-     * Get the category this metric belongs to.
+     * Get the metrics in this category.
      */
-    public function category(): BelongsTo
+    public function metrics(): HasMany
     {
-        return $this->belongsTo(MetricCategory::class, 'metric_category_id', 'id');
+        return $this->hasMany(Metric::class);
     }
 
     /**
-     * Get only active metrics.
+     * Get only active categories.
      */
     public function scopeActive(Builder $query): Builder
     {
@@ -41,7 +39,7 @@ class Metric extends Model
     }
 
     /**
-     * Get metrics ordered by sort_order.
+     * Get categories ordered by sort_order.
      */
     public function scopeOrdered(Builder $query): Builder
     {

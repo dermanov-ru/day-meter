@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DayEntry;
 use App\Models\Metric;
+use App\Models\MetricCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -41,12 +42,20 @@ class ChronicleController extends Controller
             ->orderBy('date', 'asc')
             ->get();
         
-        // Get all active metrics for reference
-        $metrics = Metric::active()->ordered()->get();
+        // Get all active metrics grouped by active categories
+        $categoriesWithMetrics = MetricCategory::active()
+            ->ordered()
+            ->with(['metrics' => function ($query) {
+                $query->where('is_active', true)->orderBy('sort_order');
+            }])
+            ->get()
+            ->filter(function ($cat) {
+                return $cat->metrics->count() > 0; // Only show categories with active metrics
+            });
         
         return view('chronicle.index', [
             'dayEntries' => $dayEntries,
-            'metrics' => $metrics,
+            'categoriesWithMetrics' => $categoriesWithMetrics,
             'month' => $month,
             'monthString' => $month->format('Y-m'),
         ]);

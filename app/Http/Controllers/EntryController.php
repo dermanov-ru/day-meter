@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DayEntry;
 use App\Models\Metric;
+use App\Models\MetricCategory;
 use App\Models\MetricValue;
 use App\Services\LogicalDateService;
 use Illuminate\Http\Request;
@@ -40,8 +41,16 @@ class EntryController extends Controller
             ['user_id' => $user->id, 'date' => $date]
         );
 
-        // Get active metrics ordered
-        $metrics = Metric::active()->ordered()->get();
+        // Get active metrics grouped by active categories
+        $categoriesWithMetrics = MetricCategory::active()
+            ->ordered()
+            ->with(['metrics' => function ($query) {
+                $query->where('is_active', true)->orderBy('sort_order');
+            }])
+            ->get()
+            ->filter(function ($cat) {
+                return $cat->metrics->count() > 0; // Only show categories with active metrics
+            });
 
         // Load existing values for this day
         $values = MetricValue::where('day_entry_id', $dayEntry->id)->get();
@@ -54,7 +63,7 @@ class EntryController extends Controller
 
         return view('entry.show', [
             'dayEntry' => $dayEntry,
-            'metrics' => $metrics,
+            'categoriesWithMetrics' => $categoriesWithMetrics,
             'date' => $date,
             'metricValues' => $metricValues,
             'metricComments' => $metricComments,
@@ -88,8 +97,24 @@ class EntryController extends Controller
 
         // Access is already restricted since we only query the user's own entries
 
-        // Get active metrics
-        $metrics = Metric::active()->get();
+        // Get active metrics grouped by active categories
+        $categoriesWithMetrics = MetricCategory::active()
+            ->ordered()
+            ->with(['metrics' => function ($query) {
+                $query->where('is_active', true)->orderBy('sort_order');
+            }])
+            ->get()
+            ->filter(function ($cat) {
+                return $cat->metrics->count() > 0; // Only show categories with active metrics
+            });
+        
+        // Flatten metrics for validation
+        $metrics = collect();
+        foreach ($categoriesWithMetrics as $category) {
+            foreach ($category->metrics as $metric) {
+                $metrics->push($metric);
+            }
+        }
 
         // Build validation rules
         $rules = [];

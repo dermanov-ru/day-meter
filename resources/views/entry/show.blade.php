@@ -33,48 +33,59 @@
 
                         <input type="hidden" name="date" value="{{ $date }}">
 
-                        <div class="space-y-6">
-                            @foreach ($metrics as $metric)
-                                <div>
-                                    <label for="metric_{{ $metric->id }}" class="block text-sm font-medium text-gray-700">
-                                        {{ $metric->title }}
-                                    </label>
+                        <div class="space-y-8">
+                            @foreach ($categoriesWithMetrics as $category)
+                                @if ($category->metrics->count() > 0)
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+                                            {{ $category->title }}
+                                        </h3>
+                                        <div class="space-y-6">
+                                            @foreach ($category->metrics as $metric)
+                                                <div>
+                                                    <label for="metric_{{ $metric->id }}" class="block text-sm font-medium text-gray-700">
+                                                        {{ $metric->title }}
+                                                    </label>
 
-                                    @if ($metric->type === 'boolean')
-                                        <input type="hidden" name="metric_{{ $metric->id }}" value="0">
-                                        <input type="checkbox"
-                                               id="metric_{{ $metric->id }}"
-                                               name="metric_{{ $metric->id }}"
-                                               value="1"
-                                               @if (isset($metricValues[$metric->id]) && $metricValues[$metric->id]) checked @endif
-                                               class="mt-2">
-                                    @else
-                                        <input type="number"
-                                               id="metric_{{ $metric->id }}"
-                                               name="metric_{{ $metric->id }}"
-                                               min="{{ $metric->min_value }}"
-                                               max="{{ $metric->max_value }}"
-                                               value="{{ $metricValues[$metric->id] ?? '' }}"
-                                               class="mt-2 block w-full rounded-md border-gray-300 shadow-sm"
-                                               required>
-                                    @endif
+                                                    @if ($metric->type === 'boolean')
+                                                        <input type="hidden" name="metric_{{ $metric->id }}" value="0">
+                                                        <input type="checkbox"
+                                                               id="metric_{{ $metric->id }}"
+                                                               name="metric_{{ $metric->id }}"
+                                                               value="1"
+                                                               @if (isset($metricValues[$metric->id]) && $metricValues[$metric->id]) checked @endif
+                                                               class="mt-2">
+                                                    @else
+                                                        <input type="number"
+                                                               id="metric_{{ $metric->id }}"
+                                                               name="metric_{{ $metric->id }}"
+                                                               min="{{ $metric->min_value }}"
+                                                               max="{{ $metric->max_value }}"
+                                                               value="{{ $metricValues[$metric->id] ?? '' }}"
+                                                               class="mt-2 block w-full rounded-md border-gray-300 shadow-sm"
+                                                               required>
+                                                    @endif
 
-                                    @error("metric_{{ $metric->id }}")
-                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                    @enderror
+                                                    @error("metric_{{ $metric->id }}")
+                                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                                    @enderror
 
-                                    <!-- Comment Section -->
-                                    <div class="mt-3">
-                                        <textarea name="metric_{{ $metric->id }}_comment"
-                                                  id="metric_{{ $metric->id }}_comment"
-                                                  rows="2"
-                                                  placeholder="{{ __('Add optional explanation...') }}"
-                                                  class="block w-full rounded-md border-gray-300 shadow-sm text-sm">{{ $metricComments[$metric->id] ?? '' }}</textarea>
-                                        @error("metric_{{ $metric->id }}_comment")
-                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                        @enderror
+                                                    <!-- Comment Section -->
+                                                    <div class="mt-3">
+                                                        <textarea name="metric_{{ $metric->id }}_comment"
+                                                                  id="metric_{{ $metric->id }}_comment"
+                                                                  rows="2"
+                                                                  placeholder="{{ __('Add optional explanation...') }}"
+                                                                  class="block w-full rounded-md border-gray-300 shadow-sm text-sm">{{ $metricComments[$metric->id] ?? '' }}</textarea>
+                                                        @error("metric_{{ $metric->id }}_comment")
+                                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
                             @endforeach
                         </div>
 
