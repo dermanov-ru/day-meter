@@ -23,7 +23,13 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased" x-data="appInitializer()" x-init="init()">
+        <!-- App Lock Overlay -->
+        @include('components.app-lock')
+
+        <!-- Biometric Setup Prompt -->
+        @include('components.biometric-setup')
+
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
 
@@ -50,5 +56,73 @@
                 </a>
             @endif
         </div>
+
+        <script>
+            // Initialize Alpine store for app lock
+            document.addEventListener('alpine:init', () => {
+                Alpine.store('appLock', {
+                    isLocked: false,
+                    lastActivity: Date.now(),
+                    inactivityTimeout: 30 * 60 * 1000, // 30 minutes
+
+                    unlock() {
+                        this.isLocked = false;
+                        this.lastActivity = Date.now();
+                        localStorage.setItem('app_lock_state', 'unlocked');
+                    },
+
+                    lock() {
+                        this.isLocked = true;
+                        localStorage.setItem('app_lock_state', 'locked');
+                    },
+
+                    activity() {
+                        this.lastActivity = Date.now();
+                    },
+                });
+            });
+
+            // App initializer component
+            function appInitializer() {
+                return {
+                    async init() {
+                        // Wait for Alpine to be ready
+                        await new Promise(resolve => {
+                            if (window.Alpine) {
+                                resolve();
+                            } else {
+                                document.addEventListener('alpine:initialized', resolve);
+                            }
+                        });
+
+                        // Check biometric status
+                        try {
+                            const response = await fetch('/api/biometric/status');
+                            const status = await response.json();
+                            
+                            // Determine if app should be locked
+                            if (status.biometric_enabled) {
+                                setTimeout(() => {
+                                    Alpine.store('appLock').lock();
+                                }, 100);
+                            }
+
+                            // Track activity
+                            document.addEventListener('click', () => Alpine.store('appLock').activity());
+                            document.addEventListener('keypress', () => Alpine.store('appLock').activity());
+
+                            // Handle page visibility (lock on background)
+                            document.addEventListener('visibilitychange', () => {
+                                if (document.hidden && status.biometric_enabled) {
+                                    Alpine.store('appLock').lock();
+                                }
+                            });
+                        } catch (error) {
+                            console.error('Error initializing app lock:', error);
+                        }
+                    }
+                };
+            }
+        </script>
     </body>
 </html>

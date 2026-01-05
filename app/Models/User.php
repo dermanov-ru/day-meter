@@ -23,6 +23,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'biometric_enabled',
+        'webauthn_credential_id',
+        'webauthn_public_key',
+        'webauthn_counter',
     ];
 
     /**

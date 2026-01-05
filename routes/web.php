@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BiometricController;
 use App\Http\Controllers\ChronicleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EntryController;
@@ -48,6 +49,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/api/notifications/unsubscribe', [NotificationController::class, 'unsubscribe'])->name('notifications.unsubscribe');
     Route::get('/api/notifications/settings', [NotificationController::class, 'getSettings'])->name('notifications.settings.get');
     Route::post('/api/notifications/settings', [NotificationController::class, 'updateSettings'])->name('notifications.settings.update');
+
+    // Biometric API endpoints
+    Route::post('/api/biometric/register/options', [BiometricController::class, 'registerOptions'])->name('biometric.register.options');
+    Route::post('/api/biometric/register/verify', [BiometricController::class, 'registerVerify'])->name('biometric.register.verify');
+    Route::post('/api/biometric/unlock/options', [BiometricController::class, 'unlockOptions'])->name('biometric.unlock.options');
+    Route::post('/api/biometric/unlock/verify', [BiometricController::class, 'unlockVerify'])->name('biometric.unlock.verify');
+    Route::post('/api/biometric/disable', [BiometricController::class, 'disable'])->name('biometric.disable');
+    Route::get('/api/biometric/status', [BiometricController::class, 'status'])->name('biometric.status');
 });
 
 require __DIR__.'/auth.php';
