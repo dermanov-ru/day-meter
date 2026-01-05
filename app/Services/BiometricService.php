@@ -18,6 +18,7 @@ use Webauthn\PublicKeyCredentialRpEntity;
 use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialUserEntity;
 use Webauthn\Denormalizer;
+use Webauthn\Normalizer;
 
 class BiometricService
 {
@@ -35,7 +36,7 @@ class BiometricService
     /**
      * Generate options for registration (setup)
      */
-    public function getRegistrationOptions(User $user): PublicKeyCredentialCreationOptions
+    public function getRegistrationOptions(User $user)
     {
         $rpEntity = new PublicKeyCredentialRpEntity(
             $this->rpName,
@@ -52,7 +53,7 @@ class BiometricService
         $challenge = random_bytes(32);
         session(['webauthn_challenge' => base64_encode($challenge)]);
 
-        return PublicKeyCredentialCreationOptions::create(
+        $options = PublicKeyCredentialCreationOptions::create(
             $rpEntity,
             $userEntity,
             $challenge,
@@ -66,6 +67,9 @@ class BiometricService
             ->setAttestation(PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_DIRECT)
             ->setUserVerification(PublicKeyCredentialCreationOptions::USER_VERIFICATION_REQUIREMENT_REQUIRED)
             ->setResidentKey(PublicKeyCredentialCreationOptions::RESIDENT_KEY_REQUIREMENT_PREFERRED);
+        
+        // Normalize to JSON-serializable array
+        return Normalizer::normalize($options);
     }
 
     /**
@@ -116,7 +120,7 @@ class BiometricService
     /**
      * Generate options for unlock (assertion)
      */
-    public function getUnlockOptions(User $user): PublicKeyCredentialRequestOptions
+    public function getUnlockOptions(User $user)
     {
         if (!$user->webauthn_credential_id) {
             throw new Exception('User has no registered biometric credential');
@@ -126,7 +130,7 @@ class BiometricService
         session(['webauthn_challenge' => base64_encode($challenge)]);
         session(['webauthn_user_id' => $user->id]);
 
-        return PublicKeyCredentialRequestOptions::create(
+        $options = PublicKeyCredentialRequestOptions::create(
             $challenge,
             PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_REQUIRED,
             [
@@ -136,6 +140,9 @@ class BiometricService
                 ),
             ]
         );
+        
+        // Normalize to JSON-serializable array
+        return Normalizer::normalize($options);
     }
 
     /**

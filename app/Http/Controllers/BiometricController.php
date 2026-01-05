@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Services\BiometricService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Webauthn\Denormalizer;
+use Webauthn\PublicKeyCredentialCreationOptions;
 
 class BiometricController extends Controller
 {
@@ -62,7 +64,13 @@ class BiometricController extends Controller
                 ], 400);
             }
 
-            $this->biometricService->verifyRegistrationResponse($user, json_encode($attestationResponse));
+            // Denormalize the response to expected format
+            $denormalizer = new Denormalizer();
+            $attestationResponseData = [
+                'response' => $attestationResponse,
+            ];
+            
+            $this->biometricService->verifyRegistrationResponse($user, json_encode($attestationResponseData));
 
             return response()->json([
                 'success' => true,
@@ -122,7 +130,12 @@ class BiometricController extends Controller
                 ], 400);
             }
 
-            $this->biometricService->verifyUnlockResponse($user, json_encode($assertionResponse));
+            // Wrap response in expected format
+            $assertionResponseData = [
+                'response' => $assertionResponse,
+            ];
+            
+            $this->biometricService->verifyUnlockResponse($user, json_encode($assertionResponseData));
 
             return response()->json([
                 'success' => true,
