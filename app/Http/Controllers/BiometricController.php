@@ -32,11 +32,31 @@ class BiometricController extends Controller
             }
 
             $options = $this->biometricService->getRegistrationOptions($user);
+            
+            // Debug logging
+            \Log::info('WebAuthn Registration Options Generated', [
+                'user_id' => $user->id,
+                'options_type' => gettype($options),
+                'options_keys' => is_array($options) ? array_keys($options) : 'not_array',
+                'has_pubKeyCredParams' => is_array($options) && isset($options['pubKeyCredParams']),
+                'pubKeyCredParams_type' => is_array($options) && isset($options['pubKeyCredParams']) ? gettype($options['pubKeyCredParams']) : 'missing',
+            ]);
+            
+            if (is_array($options) && isset($options['pubKeyCredParams'])) {
+                \Log::info('pubKeyCredParams content', [
+                    'pubKeyCredParams' => $options['pubKeyCredParams']
+                ]);
+            }
 
             return response()->json([
                 'options' => $options,
             ]);
         } catch (\Exception $e) {
+            \Log::error('WebAuthn Registration Options Error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return response()->json([
                 'error' => $e->getMessage(),
             ], 400);

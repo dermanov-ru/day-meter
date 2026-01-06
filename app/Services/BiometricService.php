@@ -38,38 +38,47 @@ class BiometricService
      */
     public function getRegistrationOptions(User $user)
     {
-        $rpEntity = new PublicKeyCredentialRpEntity(
-            $this->rpName,
-            $this->rpId,
-            $this->rpOrigin
-        );
-
-        $userEntity = new PublicKeyCredentialUserEntity(
-            $user->email,
-            (string) $user->id,
-            $user->name
-        );
-
         $challenge = random_bytes(32);
         session(['webauthn_challenge' => base64_encode($challenge)]);
 
-        $options = PublicKeyCredentialCreationOptions::create(
-            $rpEntity,
-            $userEntity,
-            $challenge,
-            [
-                \Webauthn\PublicKeyCredentialDescriptor::create(
-                    \Webauthn\PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
-                    random_bytes(32)
-                ),
-            ]
-        )
-            ->setAttestation(PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_DIRECT)
-            ->setUserVerification(PublicKeyCredentialCreationOptions::USER_VERIFICATION_REQUIREMENT_REQUIRED)
-            ->setResidentKey(PublicKeyCredentialCreationOptions::RESIDENT_KEY_REQUIREMENT_PREFERRED);
-        
-        // Normalize to JSON-serializable array
-        return Normalizer::normalize($options);
+        // Manually build WebAuthn options in correct format
+        $options = [
+            'rp' => [
+                'name' => $this->rpName,
+                'id' => $this->rpId,
+            ],
+            'user' => [
+                'id' => base64_encode((string) $user->id),
+                'name' => $user->email,
+                'displayName' => $user->name,
+            ],
+            'challenge' => base64_encode($challenge),
+            'pubKeyCredParams' => [
+                [
+                    'type' => 'public-key',
+                    'alg' => -7, // ES256
+                ],
+                [
+                    'type' => 'public-key', 
+                    'alg' => -257, // RS256
+                ],
+            ],
+            'authenticatorSelection' => [
+                'authenticatorAttachment' => 'platform',
+                'userVerification' => 'required',
+                'residentKey' => 'preferred',
+            ],
+            'attestation' => 'direct',
+            'timeout' => 60000,
+        ];
+
+        \Log::info('Manual WebAuthn options created', [
+            'user_id' => $user->id,
+            'pubKeyCredParams' => $options['pubKeyCredParams'],
+            'challenge_length' => strlen($challenge),
+        ]);
+
+        return $options;
     }
 
     /**
@@ -130,19 +139,26 @@ class BiometricService
         session(['webauthn_challenge' => base64_encode($challenge)]);
         session(['webauthn_user_id' => $user->id]);
 
-        $options = PublicKeyCredentialRequestOptions::create(
-            $challenge,
-            PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_REQUIRED,
-            [
-                \Webauthn\PublicKeyCredentialDescriptor::create(
-                    \Webauthn\PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
-                    base64_decode($user->webauthn_credential_id)
-                ),
-            ]
-        );
+        // Manually build WebAuthn request options
+        $options = [
+            'challenge' => base64_encode($challenge),
+            'allowCredentials' => [
+                [
+                    'type' => 'public-key',
+                    'id' => $user->webauthn_credential_id, // Already base64 encoded
+                ]
+            ],
+            'userVerification' => 'required',
+            'timeout' => 60000,
+        ];
+
+        \Log::info('Manual WebAuthn unlock options created', [
+            'user_id' => $user->id,
+            'credential_id_length' => strlen($user->webauthn_credential_id),
+            'challenge_length' => strlen($challenge),
+        ]);
         
-        // Normalize to JSON-serializable array
-        return Normalizer::normalize($options);
+        return $options;
     }
 
     /**

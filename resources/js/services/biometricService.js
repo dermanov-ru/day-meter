@@ -82,10 +82,20 @@ export class BiometricService {
     try {
       // Get options from server
       const options = await this.getRegistrationOptions();
+      
+      console.log('Received WebAuthn options:', options);
+      console.log('pubKeyCredParams type:', typeof options.pubKeyCredParams);
+      console.log('pubKeyCredParams content:', options.pubKeyCredParams);
 
       // Convert base64 to ArrayBuffer for WebAuthn
       options.challenge = this.base64ToArrayBuffer(options.challenge);
       options.user.id = this.base64ToArrayBuffer(options.user.id);
+      
+      console.log('Options after conversion:', {
+        challenge: options.challenge,
+        user: options.user,
+        pubKeyCredParams: options.pubKeyCredParams
+      });
 
       // Create credential
       const credential = await navigator.credentials.create({
