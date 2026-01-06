@@ -30,7 +30,7 @@
             .app-content-wrapper { opacity: 0; transition: opacity 0.3s; }
             .app-content-wrapper.unlocked { opacity: 1; }
         </style>
-        
+
         <!-- App Lock Overlay -->
         @include('components.app-lock')
 
@@ -114,15 +114,15 @@
                         try {
                             const response = await fetch('/api/biometric/status');
                             const status = await response.json();
-                            
+
                             console.log('🔍 Checking biometric status:', status);
-                            
+
                             // Simple logic: check if already unlocked
                             const isUnlocked = localStorage.getItem('biometric_unlocked') === 'true';
                             const unlockTimestamp = localStorage.getItem('unlock_timestamp');
-                            
+
                             console.log('🔍 Current state:', { isUnlocked, unlockTimestamp, biometric_enabled: status.biometric_enabled });
-                            
+
                             // Unlock immediately if:
                             // 1. Biometric is not enabled, OR
                             // 2. Already unlocked in localStorage
@@ -148,7 +148,7 @@
                                     // Wait 2 seconds to ensure app really went to background
                                     visibilityTimeout = setTimeout(() => {
                                         Alpine.store('appLock').lock('app went to background');
-                                    }, 2000);
+                                    }, 10000);
                                 } else if (!document.hidden) {
                                     // Cancel lock if page becomes visible again quickly
                                     if (visibilityTimeout) {
@@ -156,7 +156,7 @@
                                     }
                                 }
                             });
-                            
+
                             // Handle tab/window focus change
                             let blurTimeout;
                             window.addEventListener('blur', () => {
@@ -164,23 +164,23 @@
                                     // Wait 2 seconds to ensure window really lost focus
                                     blurTimeout = setTimeout(() => {
                                         Alpine.store('appLock').lock('window lost focus');
-                                    }, 2000);
+                                    }, 10000);
                                 }
                             });
-                            
+
                             window.addEventListener('focus', () => {
                                 // Cancel lock if window gets focus back quickly
                                 if (blurTimeout) {
                                     clearTimeout(blurTimeout);
                                 }
                             });
-                            
+
                             // Auto-lock on timeout (30 min inactivity)
                             setInterval(() => {
                                 const lastActivity = Alpine.store('appLock').lastActivity;
                                 const timeSinceActivity = Date.now() - lastActivity;
                                 const timeout = 30 * 60 * 1000; // 30 minutes
-                                
+
                                 if (timeSinceActivity > timeout && status.biometric_enabled && !Alpine.store('appLock').isLocked) {
                                     console.log('⏰ Inactivity timeout - locking');
                                     Alpine.store('appLock').lock('inactivity timeout (30 min)');
