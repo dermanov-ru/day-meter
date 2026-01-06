@@ -1,4 +1,4 @@
-<div class="app-lock-wrapper" x-data="appLockComponent()" x-init="init()" @keydown.escape="cancel()">
+<div x-if="isLocked" class="app-lock-wrapper" x-data="appLockComponent()" x-init="init()" @keydown.escape="cancel()">
     <!-- Lock Screen - Always rendered, shown/hidden with z-index -->
     <div class="fixed inset-0 bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center" :class="isLocked ? 'z-50 opacity-100' : '-z-50 opacity-0 pointer-events-none'" style="transition: opacity 0.3s, z-index 0s;">
         <div class="text-center">
