@@ -100,23 +100,44 @@
                             const response = await fetch('/api/biometric/status');
                             const status = await response.json();
                             
-                            // Determine if app should be locked
-                            if (status.biometric_enabled) {
-                                setTimeout(() => {
-                                    Alpine.store('appLock').lock();
-                                }, 100);
-                            }
+                            // DON'T lock on initial page load
+                            // User is already authenticated with session
+                            // Lock only on visibility change (background return)
 
                             // Track activity
                             document.addEventListener('click', () => Alpine.store('appLock').activity());
                             document.addEventListener('keypress', () => Alpine.store('appLock').activity());
 
-                            // Handle page visibility (lock on background)
+                            // Handle page visibility change (lock when returning from background)
                             document.addEventListener('visibilitychange', () => {
                                 if (document.hidden && status.biometric_enabled) {
+                                    console.log('App going to background - locking');
+                                    Alpine.store('appLock').lock();
+                                } else if (!document.hidden && status.biometric_enabled && Alpine.store('appLock').isLocked) {
+                                    console.log('App returning from background - keeping locked');
+                                    // Already locked, no need to change
+                                }
+                            });
+                            
+                            // Handle tab/window focus change
+                            window.addEventListener('blur', () => {
+                                if (status.biometric_enabled) {
+                                    console.log('Window lost focus - locking');
                                     Alpine.store('appLock').lock();
                                 }
                             });
+                            
+                            // Auto-lock on timeout (30 min inactivity)
+                            setInterval(() => {
+                                const lastActivity = Alpine.store('appLock').lastActivity;
+                                const timeSinceActivity = Date.now() - lastActivity;
+                                const timeout = 30 * 60 * 1000; // 30 minutes
+                                
+                                if (timeSinceActivity > timeout && status.biometric_enabled && !Alpine.store('appLock').isLocked) {
+                                    console.log('Inactivity timeout - locking');
+                                    Alpine.store('appLock').lock();
+                                }
+                            }, 60000); // Check every minute
                         } catch (error) {
                             console.error('Error initializing app lock:', error);
                         }
