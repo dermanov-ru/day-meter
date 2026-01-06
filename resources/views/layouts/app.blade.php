@@ -110,11 +110,15 @@
                             const status = await response.json();
                             
                             // Check if we need to show biometric lock
-                            const isPageRefresh = !document.referrer || document.referrer === window.location.href;
                             const wasLocked = localStorage.getItem('app_lock_state') === 'locked';
+                            const isFromSameDomain = document.referrer && document.referrer.startsWith(window.location.origin);
+                            const isPageRefresh = !document.referrer || document.referrer === window.location.href;
                             
-                            // If biometric is not enabled, or this is just a page refresh and we weren't locked
-                            if (!status.biometric_enabled || (isPageRefresh && !wasLocked)) {
+                            // Unlock if:
+                            // 1. Biometric is not enabled, OR
+                            // 2. Navigation within the same app (same domain), OR  
+                            // 3. Page refresh and we weren't previously locked
+                            if (!status.biometric_enabled || isFromSameDomain || (isPageRefresh && !wasLocked)) {
                                 // Unlock immediately - no biometric needed
                                 Alpine.store('appLock').unlock();
                             }
