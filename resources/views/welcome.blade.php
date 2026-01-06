@@ -998,7 +998,80 @@
         </div>
     </section>
 
-    <!-- Кому подойдёт -->
+    <!-- Биометрическая блокировка -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Биометрическая защита приложения</h2>
+            <p class="section-subtitle">Дополнительный уровень безопасности с использованием отпечатка пальца и Face ID</p>
+
+            <div class="two-column">
+                <div class="column-text">
+                    <h3>🔐 App Lock с биометрией</h3>
+                    <p>Ваши личные данные защищены дополнительным уровнем безопасности:</p>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Отпечаток пальца</strong> (Touch ID на iOS, биометрия на Android)</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Face ID</strong> на iPhone и подобные системы на Android</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Работает поверх существующей сессии (не требует повторную авторизацию на сервере)</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Настраивается после входа — полностью опционально</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Используется стандарт WebAuthn (FIDO2) для максимальной безопасности</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1.5rem;"><strong>Как работает:</strong> При открытии приложения после возврата из фона вы видите экран блокировки. Одно прикосновение пальцем или сканирование лица — и приложение разблокировано.</p>
+                </div>
+                <div class="column-visual">
+                    <div class="visual-box">👆</div>
+                </div>
+            </div>
+
+            <div class="two-column reverse" style="margin-top: 3rem;">
+                <div class="column-text">
+                    <h3>🛡️ Автоматическая блокировка</h3>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Приложение блокируется автоматически при сворачивании</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Также блокируется при переключении на другое приложение</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Таймаут неактивности (30 минут) — приложение заблокируется само</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Обновление страницы не требует повторную биометрию</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Биометрические данные хранятся только на устройстве (не отправляются на сервер)</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1.5rem;"><strong>Безопасность вашей приватности:</strong> Сервер знает только о том, что биометрия включена. Сами отпечатки и лицо никогда не отправляются на сервер.</p>
+                </div>
+                <div class="column-visual">
+                    <div class="visual-box">🔒</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Кому подойдет -->
     <section class="section">
         <div class="container">
             <h2 class="section-title">Кому подойдёт DayMeter</h2>
