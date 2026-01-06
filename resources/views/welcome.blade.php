@@ -800,6 +800,35 @@
                     <div class="visual-box">📸</div>
                 </div>
             </div>
+
+            <div class="two-column reverse" style="margin-top: 3rem;">
+                <div class="column-text">
+                    <h3>📋 Фото-хроника — отдельный архив</h3>
+                    <p>Чтобы не перегружать летопись фото, мы сохранили все значимые фото в отдельный раздел:</p>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Отдельный раздел "Фото-хроника" для всех фотографий</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Полноразмерное отображение фото и комментариев</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Группировка фото по датам с новыми в начале</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Ленивая загрузка изображений — быстрая навигация</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1.5rem;"><strong>Отдельные разделы — лучшая организация.</strong> Летопись за 30 дней загружается быстро, фото смотрите в отдельном потоке.</p>
+                </div>
+                <div class="column-visual">
+                    <div class="visual-box">📋</div>
+                </div>
+            </div>
         </div>
     </section>
 
