@@ -154,3 +154,60 @@ Tests use PHPUnit. Feature tests verify request/response behavior. Unit tests ve
 ### Adding Frontend Interactivity
 Use Alpine.js for simple interactions (included in `resources/js/bootstrap.js`). For complex state, consider extracting components to `resources/views/components/`.
 
+## Deployment Workflow
+
+Standard workflow for changes:
+
+### 1. Build Frontend Assets
+```bash
+npm run build
+```
+Compiles CSS and JavaScript using Vite. Required before committing any UI/style changes.
+
+### 2. Commit Changes
+```bash
+git add -A
+git commit -m "Descriptive commit message
+
+- Bullet point 1
+- Bullet point 2
+
+Co-Authored-By: Warp <agent@warp.dev>"
+```
+
+Always include:
+- Descriptive title
+- Bullet points explaining changes
+- Co-author line at the end
+
+### 3. Deploy to Production
+```bash
+bash deploy.sh
+```
+
+This script:
+1. Pulls latest changes from GitHub (git pull)
+2. Installs PHP dependencies (composer install)
+3. Runs database migrations (php artisan migrate)
+4. Clears application cache (php artisan cache:clear)
+
+Note: The deployment script uses remote SSH connection to production server. It is configured in deploy.sh.
+
+### Full Example
+```bash
+# 1. Make changes to code
+# 2. Build frontend
+npm run build
+
+# 3. Commit with message
+git add -A
+git commit -m "Fix unlock message on reload
+
+- Clear message in app-lock component init
+- Prevent stale success message from appearing
+
+Co-Authored-By: Warp <agent@warp.dev>"
+
+# 4. Deploy
+bash deploy.sh
+```
