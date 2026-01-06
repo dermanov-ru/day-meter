@@ -76,12 +76,14 @@
                         this.isLocked = false;
                         this.lastActivity = Date.now();
                         localStorage.setItem('app_lock_state', 'unlocked');
+                        sessionStorage.setItem('biometric_unlocked', 'true'); // Mark as unlocked in session
                         document.querySelector('.app-content-wrapper')?.classList.add('unlocked');
                     },
 
                     lock() {
                         this.isLocked = true;
                         localStorage.setItem('app_lock_state', 'locked');
+                        sessionStorage.removeItem('biometric_unlocked'); // Remove session unlock
                         document.querySelector('.app-content-wrapper')?.classList.remove('unlocked');
                     },
 
@@ -109,19 +111,17 @@
                             const response = await fetch('/api/biometric/status');
                             const status = await response.json();
                             
-                            // Check if we need to show biometric lock
-                            const wasLocked = localStorage.getItem('app_lock_state') === 'locked';
-                            const isFromSameDomain = document.referrer && document.referrer.startsWith(window.location.origin);
-                            const isPageRefresh = !document.referrer || document.referrer === window.location.href;
+                            // Check session-based unlock state
+                            const isUnlockedInSession = sessionStorage.getItem('biometric_unlocked') === 'true';
+                            const wasLockedInStorage = localStorage.getItem('app_lock_state') === 'locked';
                             
-                            // Unlock only if:
+                            // Unlock immediately if:
                             // 1. Biometric is not enabled, OR
-                            // 2. Navigation within the same app (same domain) AND not a page refresh
-                            if (!status.biometric_enabled || (isFromSameDomain && !isPageRefresh)) {
-                                // Unlock immediately - no biometric needed
+                            // 2. Already unlocked in current browser session
+                            if (!status.biometric_enabled || isUnlockedInSession) {
                                 Alpine.store('appLock').unlock();
                             }
-                            // For page refresh (pull-to-refresh) - always require biometric if enabled
+                            // Otherwise, if biometric is enabled and not unlocked in session - keep locked
 
                             // Track activity
                             document.addEventListener('click', () => Alpine.store('appLock').activity());
