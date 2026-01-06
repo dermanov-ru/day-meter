@@ -1377,5 +1377,7 @@
     <footer class="footer">
         <p>&copy; 2026 DayMeter. Личный сервис осознанного трекинга жизни.</p>
     </footer>
+
+    <x-yandex-metrika />
 </body>
 </html>
