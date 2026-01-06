@@ -159,7 +159,7 @@
                         </div>
 
                         <!-- Mobile Floating Save Button -->
-                        <button type="button" onclick="submitForm(document.getElementById('entry-form'))" class="fixed bottom-8 right-8 sm:hidden w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110">
+                        <button type="button" onclick="submitForm(document.getElementById('entry-form'))" class="fixed bottom-24 right-6 sm:hidden w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V3"></path>
                             </svg>
