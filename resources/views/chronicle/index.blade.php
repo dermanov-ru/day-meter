@@ -59,23 +59,30 @@
                                     </div>
                                 @endif
 
-                                <!-- Photos -->
+                                <!-- Photos Preview -->
                                 @if($dayEntry->photos->count() > 0)
                                     <div class="mb-4">
-                                        <div class="text-sm font-semibold text-gray-700 mb-3">📷 {{ __('Фото дня') }}:</div>
-                                        <div class="space-y-4">
-                                            @foreach($dayEntry->photos as $photo)
-                                                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                                                    <div class="mb-3">
-                                                        <img src="{{ $photo->getUrl() }}"
-                                                             alt="Photo"
-                                                             class="max-w-2xl w-full h-auto rounded shadow-md">
-                                                    </div>
-                                                    @if($photo->comment)
-                                                        <p class="text-gray-700 text-sm leading-relaxed">{{ $photo->comment }}</p>
-                                                    @endif
+                                        <div class="flex items-center justify-between mb-3">
+                                            <div class="text-sm font-semibold text-gray-700">📷 {{ __('Фото') }} ({{ $dayEntry->photos->count() }})</div>
+                                            <a href="{{ route('photos.chronicle.index') }}?month={{ \Carbon\Carbon::parse($dayEntry->date)->format('Y-m') }}#{{ \Carbon\Carbon::parse($dayEntry->date)->format('Y-m-d') }}"
+                                               class="text-xs text-blue-600 hover:text-blue-800 underline">
+                                                {{ __('Все фото') }} →
+                                            </a>
+                                        </div>
+                                        <div class="flex flex-wrap gap-2">
+                                            @foreach($dayEntry->photos->take(3) as $photo)
+                                                <div class="flex-shrink-0">
+                                                    <img src="{{ $photo->getThumbnailUrl() }}"
+                                                         alt="Photo"
+                                                         class="w-20 h-20 object-cover rounded border border-gray-300"
+                                                         loading="lazy">
                                                 </div>
                                             @endforeach
+                                            @if($dayEntry->photos->count() > 3)
+                                                <div class="flex-shrink-0 w-20 h-20 bg-gray-200 rounded border border-gray-300 flex items-center justify-center">
+                                                    <span class="text-xs font-semibold text-gray-600">+{{ $dayEntry->photos->count() - 3 }}</span>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 @endif

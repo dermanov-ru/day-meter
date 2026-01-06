@@ -29,6 +29,9 @@
                     <x-nav-link :href="route('chronicle.index')" :active="request()->routeIs('chronicle.*')">
                         {{ __('Летопись') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('photos.chronicle.index')" :active="request()->routeIs('photos.chronicle.*')">
+                        {{ __('Фото-хроника') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('diseases.index')" :active="request()->routeIs('diseases.*')">
                         {{ __('Здоровье') }}
                     </x-nav-link>
@@ -107,6 +110,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('chronicle.index')" :active="request()->routeIs('chronicle.*')">
                 {{ __('Летопись') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('photos.chronicle.index')" :active="request()->routeIs('photos.chronicle.*')">
+                {{ __('Фото-хроника') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('diseases.index')" :active="request()->routeIs('diseases.*')">
                 {{ __('Здоровье') }}

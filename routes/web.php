@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DiseaseController;
 use App\Http\Controllers\EntryController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PhotoChronicleController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
@@ -32,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/stats/month', [StatsController::class, 'month'])->name('stats.month');
 
     Route::get('/chronicle', [ChronicleController::class, 'index'])->name('chronicle.index');
+    Route::get('/photo-chronicle', [PhotoChronicleController::class, 'index'])->name('photos.chronicle.index');
 
     Route::get('/settings/metrics', [SettingsController::class, 'metrics'])->name('settings.metrics');
     Route::post('/settings/metrics', [SettingsController::class, 'storeMetric'])->name('settings.metrics.store');

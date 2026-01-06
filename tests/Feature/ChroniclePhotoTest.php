@@ -52,10 +52,12 @@ class ChroniclePhotoTest extends TestCase
         $response = $this->actingAs($this->user)->get(route('chronicle.index', ['month' => $this->testMonth]));
 
         $response->assertOk();
-        // Check that photos section is displayed
-        $response->assertSeeText('📷 Фото дня');
-        $response->assertSeeText('First photo comment');
-        $response->assertSeeText('Second photo comment');
+        // Check that photos section is displayed with thumbnails
+        $response->assertSeeText('📷 Фото');
+        $response->assertSeeText('2'); // 2 photos
+        // Comments are in photo-chronicle, not chronicle
+        $response->assertDontSeeText('First photo comment');
+        $response->assertDontSeeText('Second photo comment');
     }
 
     public function test_chronicle_displays_photos_without_comments()
@@ -78,7 +80,8 @@ class ChroniclePhotoTest extends TestCase
 
         $response->assertOk();
         // Check that photo section is displayed even without comments
-        $response->assertSeeText('📷 Фото дня');
+        $response->assertSeeText('📷 Фото');
+        $response->assertSeeText('1'); // 1 photo
     }
 
     public function test_chronicle_does_not_show_photos_for_other_users()
