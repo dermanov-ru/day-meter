@@ -178,19 +178,25 @@
                             <div id="photos-container" class="space-y-4">
                                 @forelse($photos as $photo)
                                     <div class="photo-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-photo-id="{{ $photo->id }}">
-                                        <div class="flex gap-4">
+                                        <div class="flex gap-4 flex-col sm:flex-row">
                                             <div class="flex-shrink-0">
                                                 <img src="{{ $photo->getThumbnailUrl() }}"
                                                      alt="Photo"
-                                                     class="w-24 h-24 object-cover rounded">
+                                                     class="w-full sm:w-48 h-48 object-cover rounded">
                                             </div>
-                                            <div class="flex-grow">
-                                                <textarea class="photo-comment block w-full rounded-md border-gray-300 shadow-sm text-sm"
+                                            <div class="flex-grow flex flex-col">
+                                                <textarea class="photo-comment block w-full rounded-md border-gray-300 shadow-sm text-sm flex-grow"
                                                           placeholder="{{ __('Комментарий (опционально)') }}"
                                                           data-photo-id="{{ $photo->id }}"
                                                           onblur="updatePhotoComment({{ $photo->id }}, this.value)">{{ $photo->comment ?? '' }}</textarea>
+                                                <button type="button"
+                                                        class="mt-2 w-full px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors duration-200 sm:hidden"
+                                                        onclick="deletePhoto({{ $photo->id }})"
+                                                        title="{{ __('Удалить фото') }}">
+                                                    {{ __('Удалить') }}
+                                                </button>
                                             </div>
-                                            <div class="flex-shrink-0">
+                                            <div class="flex-shrink-0 hidden sm:flex">
                                                 <button type="button"
                                                         class="px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors duration-200"
                                                         onclick="deletePhoto({{ $photo->id }})"
@@ -606,19 +612,25 @@
 
             const photoHTML = `
                 <div class="photo-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-photo-id="${photoData.id}">
-                    <div class="flex gap-4">
+                    <div class="flex gap-4 flex-col sm:flex-row">
                         <div class="flex-shrink-0">
                             <img src="${photoData.thumbnail_url}"
                                  alt="Photo"
-                                 class="w-24 h-24 object-cover rounded">
+                                 class="w-full sm:w-48 h-48 object-cover rounded">
                         </div>
-                        <div class="flex-grow">
-                            <textarea class="photo-comment block w-full rounded-md border-gray-300 shadow-sm text-sm"
+                        <div class="flex-grow flex flex-col">
+                            <textarea class="photo-comment block w-full rounded-md border-gray-300 shadow-sm text-sm flex-grow"
                                       placeholder="Комментарий (опционально)"
                                       data-photo-id="${photoData.id}"
                                       onblur="updatePhotoComment(${photoData.id}, this.value)"></textarea>
+                            <button type="button"
+                                    class="mt-2 w-full px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors duration-200 sm:hidden"
+                                    onclick="deletePhoto(${photoData.id})"
+                                    title="Удалить фото">
+                                Удалить
+                            </button>
                         </div>
-                        <div class="flex-shrink-0">
+                        <div class="flex-shrink-0 hidden sm:flex">
                             <button type="button"
                                     class="px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors duration-200"
                                     onclick="deletePhoto(${photoData.id})"

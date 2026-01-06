@@ -69,7 +69,7 @@
                                                     <div class="mb-3">
                                                         <img src="{{ $photo->getUrl() }}"
                                                              alt="Photo"
-                                                             class="max-w-full h-auto rounded">
+                                                             class="max-w-2xl w-full h-auto rounded shadow-md">
                                                     </div>
                                                     @if($photo->comment)
                                                         <p class="text-gray-700 text-sm leading-relaxed">{{ $photo->comment }}</p>
