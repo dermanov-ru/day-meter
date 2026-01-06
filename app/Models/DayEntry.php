@@ -25,4 +25,12 @@ class DayEntry extends Model
     {
         return $this->hasMany(MetricValue::class);
     }
+
+    /**
+     * Get the photos for this day entry.
+     */
+    public function photos(): HasMany
+    {
+        return $this->hasMany(DayPhoto::class)->orderBy('sort_order');
+    }
 }

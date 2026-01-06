@@ -105,4 +105,12 @@ class User extends Authenticatable
             'timezone' => 'Europe/Moscow',
         ]);
     }
+
+    /**
+     * Get the user's photos.
+     */
+    public function photos(): HasMany
+    {
+        return $this->hasMany(DayPhoto::class);
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DayEntry;
 use App\Models\DailyInsight;
+use App\Models\DayPhoto;
 use App\Models\Metric;
 use App\Models\MetricCategory;
 use Illuminate\Http\Request;
@@ -39,7 +40,7 @@ class ChronicleController extends Controller
         // Get day entries for the month, ordered by date ascending (old to new)
         $dayEntries = DayEntry::where('user_id', $user->id)
             ->whereBetween('date', [$startDate, $endDate])
-            ->with('values.metric')
+            ->with('values.metric', 'photos')
             ->orderBy('date', 'asc')
             ->get();
         

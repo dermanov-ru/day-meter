@@ -279,6 +279,7 @@ DayMeter подойдёт тем, кто:
 ./vendor/laravel/sail/bin/sail up -d
 ./vendor/laravel/sail/bin/sail artisan migrate
 ./vendor/bin/sail npm run build
+./vendor/laravel/sail/bin/sail composer
 
 # Планировщик задач
 ./vendor/laravel/sail/bin/sail artisan schedule:list

@@ -59,6 +59,27 @@
                                     </div>
                                 @endif
 
+                                <!-- Photos -->
+                                @if($dayEntry->photos->count() > 0)
+                                    <div class="mb-4">
+                                        <div class="text-sm font-semibold text-gray-700 mb-3">📷 {{ __('Фото дня') }}:</div>
+                                        <div class="space-y-4">
+                                            @foreach($dayEntry->photos as $photo)
+                                                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                                    <div class="mb-3">
+                                                        <img src="{{ $photo->getUrl() }}"
+                                                             alt="Photo"
+                                                             class="max-w-full h-auto rounded">
+                                                    </div>
+                                                    @if($photo->comment)
+                                                        <p class="text-gray-700 text-sm leading-relaxed">{{ $photo->comment }}</p>
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+
                                 <!-- Metric Comments Grouped by Category -->
                                 @php
                                     $commentsWithMetrics = $dayEntry->values->filter(fn($v) => $v->comment)->values();

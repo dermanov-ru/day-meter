@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DiseaseController;
 use App\Http\Controllers\EntryController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatsController;
@@ -57,6 +58,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/health/diseases/{disease}', [DiseaseController::class, 'destroy'])->name('diseases.destroy');
     Route::post('/health/diseases/{disease}/notes', [DiseaseController::class, 'storeNote'])->name('diseases.notes.store');
     Route::delete('/health/diseases/{disease}/notes/{note}', [DiseaseController::class, 'destroyNote'])->name('diseases.notes.destroy');
+
+    // Photo routes
+    Route::post('/api/photos/upload', [PhotoController::class, 'upload'])->name('photos.upload');
+    Route::delete('/api/photos/{photo}', [PhotoController::class, 'delete'])->name('photos.delete');
+    Route::patch('/api/photos/{photo}/comment', [PhotoController::class, 'updateComment'])->name('photos.updateComment');
 
     // Culture / Cultural Activities routes
     Route::get('/culture/activities', [CulturalActivityController::class, 'index'])->name('activities.index');

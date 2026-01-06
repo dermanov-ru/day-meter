@@ -153,6 +153,67 @@
                             @enderror
                         </div>
 
+                        <!-- Photo Section -->
+                        <div class="mt-8 pt-8 border-t border-gray-200">
+                            <label class="block text-sm font-medium text-gray-700 mb-4">
+                                {{ __('📷 Фото дня') }}
+                            </label>
+                            
+                            <!-- File Upload Input -->
+                            <div class="mb-6">
+                                <label for="photo-input" class="inline-block px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 cursor-pointer transition-colors duration-200">
+                                    {{ __('Добавить фото') }}
+                                </label>
+                                <input type="file"
+                                       id="photo-input"
+                                       accept="image/*"
+                                       multiple
+                                       style="display: none;"
+                                       onchange="handlePhotoUpload(event, '{{ $date }}')"
+                                       class="hidden">
+                                <p class="text-xs text-gray-500 mt-2">{{ __('JPG, PNG, GIF (макс 10 МБ за файл, без лимита по количеству)') }}</p>
+                            </div>
+
+                            <!-- Photos List -->
+                            <div id="photos-container" class="space-y-4">
+                                @forelse($photos as $photo)
+                                    <div class="photo-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-photo-id="{{ $photo->id }}">
+                                        <div class="flex gap-4">
+                                            <div class="flex-shrink-0">
+                                                <img src="{{ $photo->getThumbnailUrl() }}"
+                                                     alt="Photo"
+                                                     class="w-24 h-24 object-cover rounded">
+                                            </div>
+                                            <div class="flex-grow">
+                                                <textarea class="photo-comment block w-full rounded-md border-gray-300 shadow-sm text-sm"
+                                                          placeholder="{{ __('Комментарий (опционально)') }}"
+                                                          data-photo-id="{{ $photo->id }}"
+                                                          onblur="updatePhotoComment({{ $photo->id }}, this.value)">{{ $photo->comment ?? '' }}</textarea>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <button type="button"
+                                                        class="px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors duration-200"
+                                                        onclick="deletePhoto({{ $photo->id }})"
+                                                        title="{{ __('Удалить фото') }}">
+                                                    🗑️
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <p class="text-gray-500 italic text-sm">{{ __('Пока нет фото') }}</p>
+                                @endforelse
+                            </div>
+
+                            <!-- Upload Progress -->
+                            <div id="upload-progress" style="display: none;" class="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <div class="text-sm font-medium text-blue-900">{{ __('Загрузка...') }}</div>
+                                <div class="mt-2 w-full bg-blue-200 rounded-full h-2">
+                                    <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Main Day Note Section -->
                         <div class="mt-8 pt-8 border-t border-gray-200">
                             <label for="day_note" class="block text-sm font-medium text-gray-700 mb-2">
@@ -474,6 +535,172 @@
                 voiceBtn.classList.remove('bg-red-500', 'text-white', 'hover:bg-red-600', 'animate-pulse');
                 voiceBtn.classList.add('bg-gray-300', 'text-gray-700', 'hover:bg-gray-400');
             }
+        }
+
+        // Photo management functions
+        function handlePhotoUpload(event, date) {
+            const files = Array.from(event.target.files);
+            if (files.length === 0) return;
+
+            // Upload files sequentially
+            uploadPhotosSequentially(files, date, 0);
+        }
+
+        function uploadPhotosSequentially(files, date, index) {
+            if (index >= files.length) {
+                // All files uploaded, reset input
+                document.getElementById('photo-input').value = '';
+                hideUploadProgress();
+                return;
+            }
+
+            const file = files[index];
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('date', date);
+
+            const csrfToken = document.querySelector('input[name="_token"]').value;
+
+            // Show progress
+            const progressDiv = document.getElementById('upload-progress');
+            const progressBar = document.getElementById('progress-bar');
+            progressDiv.style.display = 'block';
+            progressBar.style.width = '0%';
+
+            fetch('{{ route("photos.upload") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                body: formData
+            })
+            .then(response => {
+                progressBar.style.width = '100%';
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    addPhotoToUI(data.photo);
+                    // Upload next file
+                    uploadPhotosSequentially(files, date, index + 1);
+                } else {
+                    alert('Ошибка загрузки: ' + (data.error || 'Unknown error'));
+                    uploadPhotosSequentially(files, date, index + 1);
+                }
+            })
+            .catch(error => {
+                console.error('Upload error:', error);
+                alert('Ошибка при загрузке фото');
+                uploadPhotosSequentially(files, date, index + 1);
+            });
+        }
+
+        function addPhotoToUI(photoData) {
+            const container = document.getElementById('photos-container');
+            
+            // Remove "no photos" message if it exists
+            const emptyMessage = container.querySelector('.text-gray-500.italic');
+            if (emptyMessage) {
+                emptyMessage.remove();
+            }
+
+            const photoHTML = `
+                <div class="photo-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-photo-id="${photoData.id}">
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0">
+                            <img src="${photoData.thumbnail_url}"
+                                 alt="Photo"
+                                 class="w-24 h-24 object-cover rounded">
+                        </div>
+                        <div class="flex-grow">
+                            <textarea class="photo-comment block w-full rounded-md border-gray-300 shadow-sm text-sm"
+                                      placeholder="Комментарий (опционально)"
+                                      data-photo-id="${photoData.id}"
+                                      onblur="updatePhotoComment(${photoData.id}, this.value)"></textarea>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <button type="button"
+                                    class="px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors duration-200"
+                                    onclick="deletePhoto(${photoData.id})"
+                                    title="Удалить фото">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', photoHTML);
+        }
+
+        function deletePhoto(photoId) {
+            if (!confirm('Вы уверены? Это действие нельзя отменить.')) {
+                return;
+            }
+
+            const csrfToken = document.querySelector('input[name="_token"]').value;
+
+            fetch(`{{ route('photos.delete', ['photo' => 'PHOTO_ID']) }}`.replace('PHOTO_ID', photoId), {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove from UI
+                    const photoItem = document.querySelector(`.photo-item[data-photo-id="${photoId}"]`);
+                    if (photoItem) {
+                        photoItem.remove();
+                    }
+
+                    // Show "no photos" message if container is empty
+                    const container = document.getElementById('photos-container');
+                    if (container.children.length === 0) {
+                        container.innerHTML = '<p class="text-gray-500 italic text-sm">Пока нет фото</p>';
+                    }
+                } else {
+                    alert('Ошибка при удалении фото');
+                }
+            })
+            .catch(error => {
+                console.error('Delete error:', error);
+                alert('Ошибка при удалении фото');
+            });
+        }
+
+        function updatePhotoComment(photoId, comment) {
+            const csrfToken = document.querySelector('input[name="_token"]').value;
+
+            fetch(`{{ route('photos.updateComment', ['photo' => 'PHOTO_ID']) }}`.replace('PHOTO_ID', photoId), {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    comment: comment || null
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    alert('Ошибка при сохранении комментария');
+                }
+            })
+            .catch(error => {
+                console.error('Comment update error:', error);
+                alert('Ошибка при сохранении комментария');
+            });
+        }
+
+        function hideUploadProgress() {
+            const progressDiv = document.getElementById('upload-progress');
+            setTimeout(() => {
+                progressDiv.style.display = 'none';
+            }, 500);
         }
 
         // Initialize on page load

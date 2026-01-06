@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DayEntry;
 use App\Models\DailyInsight;
+use App\Models\DayPhoto;
 use App\Models\Metric;
 use App\Models\MetricCategory;
 use App\Models\MetricValue;
@@ -67,6 +68,9 @@ class EntryController extends Controller
             ->where('date', $date)
             ->first();
 
+        // Load photos for this day
+        $photos = $dayEntry->photos()->get();
+
         return view('entry.show', [
             'dayEntry' => $dayEntry,
             'categoriesWithMetrics' => $categoriesWithMetrics,
@@ -75,6 +79,7 @@ class EntryController extends Controller
             'metricComments' => $metricComments,
             'dayNote' => $dayEntry->day_note,
             'dailyInsight' => $dailyInsight,
+            'photos' => $photos,
         ]);
     }
 
