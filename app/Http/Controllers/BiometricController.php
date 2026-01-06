@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Services\BiometricService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Webauthn\Denormalizer;
-use Webauthn\PublicKeyCredentialCreationOptions;
 
 class BiometricController extends Controller
 {
@@ -84,13 +82,14 @@ class BiometricController extends Controller
                 ], 400);
             }
 
-            // Denormalize the response to expected format
-            $denormalizer = new Denormalizer();
-            $attestationResponseData = [
-                'response' => $attestationResponse,
-            ];
+            \Log::info('Received attestation response', [
+                'user_id' => $user->id,
+                'response_keys' => array_keys($attestationResponse),
+                'response_type' => gettype($attestationResponse)
+            ]);
             
-            $this->biometricService->verifyRegistrationResponse($user, json_encode($attestationResponseData));
+            // Pass the raw attestation response to service
+            $this->biometricService->verifyRegistrationResponse($user, json_encode($attestationResponse));
 
             return response()->json([
                 'success' => true,
@@ -150,12 +149,14 @@ class BiometricController extends Controller
                 ], 400);
             }
 
-            // Wrap response in expected format
-            $assertionResponseData = [
-                'response' => $assertionResponse,
-            ];
+            \Log::info('Received assertion response', [
+                'user_id' => $user->id,
+                'response_keys' => array_keys($assertionResponse),
+                'response_type' => gettype($assertionResponse)
+            ]);
             
-            $this->biometricService->verifyUnlockResponse($user, json_encode($assertionResponseData));
+            // Pass the raw assertion response to service
+            $this->biometricService->verifyUnlockResponse($user, json_encode($assertionResponse));
 
             return response()->json([
                 'success' => true,
