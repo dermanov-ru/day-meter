@@ -619,7 +619,9 @@
     <section class="hero container">
         <h1 class="hero-title">DayMeter</h1>
         <p class="hero-subtitle">Личный сервис осознанного трекинга жизни</p>
-        <p class="hero-tagline">Без шума. Без морали. Без "геймификации".</p>
+        <p class="hero-tagline">
+            Без подписки. Без смс. Но с регистрацией :)
+        </p>
         <div class="hero-buttons">
             <a href="{{ route('register') }}" class="btn btn-primary">Начать прямо сейчас</a>
             <a href="#features" class="btn btn-secondary">Узнать больше ↓</a>
@@ -812,6 +814,113 @@
 
             <div class="highlight-box" style="margin-top: 3rem;">
                 <p>Культурные активности ложатся в единую хронику жизни. Вы сможете читать свою историю: "В июне читал Достоевского, смотрел три фильма, ходил на концерт". Это не просто список книг — это <strong>жизнь, записанная в контексте.</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Здоровье и болезни -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Здоровье как история болезни</h2>
+            <p class="section-subtitle">Отслеживайте недомогания, лечение и восстановление в контексте жизни</p>
+
+            <div class="two-column">
+                <div class="column-text">
+                    <h3>🏥 Журнал болезней</h3>
+                    <p>Вместо просто отметок "был болен" ведите полный журнал каждого недомогания:</p>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Категория болезни</strong> — ОРВИ, ЖКТ, ЛОР, аллергия, грипп, воспаление и другие</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Описание и названние</strong> — точное название заболевания или симптомы</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Дата начала</strong> — когда появились первые симптомы</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Дата завершения</strong> — когда выздоровели</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1.5rem;"><strong>Это даёт полную картину:</strong> как часто вы болеете, какие сезоны опаснее, сколько времени занимает восстановление.</p>
+                </div>
+                <div class="column-visual">
+                    <div class="visual-box">📋</div>
+                </div>
+            </div>
+
+            <div class="two-column reverse" style="margin-top: 3rem;">
+                <div class="column-text">
+                    <h3>📝 Временная шкала болезни</h3>
+                    <p>К каждой болезни добавляйте заметки о ходе болезни с разными типами записей:</p>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Симптомы</strong> — что беспокоит (кашель, насморк, боли)</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Лечение</strong> — какие лекарства или процедуры применяли</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Состояние</strong> — как себя чувствуете (с числовой оценкой если нужно)</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Мероприятия</strong> — посещение врача, анализы, осмотры</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Лекарства</strong> — какие препараты были назначены</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Свободные заметки</strong> — дополнительная информация и наблюдения</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1.5rem;"><strong>Каждая запись привязана к дате</strong> — вы видите полную хронологию болезни день за днём.</p>
+                </div>
+                <div class="column-visual">
+                    <div class="visual-box">📅</div>
+                </div>
+            </div>
+
+            <div class="two-column" style="margin-top: 3rem;">
+                <div class="column-text">
+                    <h3>📊 История здоровья</h3>
+                    <p>Все болезни организованы в едином интерфейсе:</p>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Текущие болезни — в процессе лечения</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Завершённые болезни — полная история с временной шкалой</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Фильтр по категориям — найти все ОРВИ за год</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Быстрый просмотр — сколько дней заняло лечение</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1.5rem;"><strong>Со временем видна закономерность:</strong> какие болезни возвращаются, какие методы работают лучше, как сезоны влияют на здоровье.</p>
+                </div>
+                <div class="column-visual">
+                    <div class="visual-box">💪</div>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 3rem;">
+                <p>Здоровье — это не просто отметка в чекбоксе "был болен". Это процесс, который стоит документировать. DayMeter позволяет вести <strong>полный журнал каждого эпизода болезни</strong> — от первых симптомов до полного восстановления. Это помогает врачам и самому лучше понять закономерности.</p>
             </div>
         </div>
     </section>
