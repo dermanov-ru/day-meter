@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DayEntry;
+use App\Models\DailyInsight;
 use App\Models\Metric;
 use App\Models\MetricCategory;
 use App\Models\MetricValue;
@@ -61,6 +62,11 @@ class EntryController extends Controller
             $metricComments[$value->metric_id] = $value->comment;
         }
 
+        // Load existing daily insight for this day
+        $dailyInsight = DailyInsight::where('user_id', $user->id)
+            ->where('date', $date)
+            ->first();
+
         return view('entry.show', [
             'dayEntry' => $dayEntry,
             'categoriesWithMetrics' => $categoriesWithMetrics,
@@ -68,6 +74,7 @@ class EntryController extends Controller
             'metricValues' => $metricValues,
             'metricComments' => $metricComments,
             'dayNote' => $dayEntry->day_note,
+            'dailyInsight' => $dailyInsight,
         ]);
     }
 
@@ -129,6 +136,7 @@ class EntryController extends Controller
         }
         $rules['date'] = 'sometimes'; // Allow date, we already validated it
         $rules['day_note'] = 'sometimes|nullable|string';
+        $rules['daily_insight'] = 'sometimes|nullable|string|max:500';
 
         $validated = $request->validate($rules);
 
@@ -179,6 +187,23 @@ class EntryController extends Controller
         if (isset($validated['day_note'])) {
             $dayEntry->day_note = $validated['day_note'];
             $dayEntry->save();
+        }
+
+        // Save daily_insight if provided
+        if (isset($validated['daily_insight'])) {
+            if (!empty($validated['daily_insight'])) {
+                DailyInsight::updateOrCreate(
+                    ['user_id' => $user->id, 'date' => $date],
+                    [
+                        'text' => $validated['daily_insight'],
+                        'type' => 'insight',
+                    ]
+                );
+            } else {
+                DailyInsight::where('user_id', $user->id)
+                    ->where('date', $date)
+                    ->delete();
+            }
         }
 
         // Return JSON for async requests, redirect for regular requests

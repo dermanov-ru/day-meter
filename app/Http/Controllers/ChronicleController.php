@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DayEntry;
+use App\Models\DailyInsight;
 use App\Models\Metric;
 use App\Models\MetricCategory;
 use Illuminate\Http\Request;
@@ -42,6 +43,14 @@ class ChronicleController extends Controller
             ->orderBy('date', 'asc')
             ->get();
         
+        // Get daily insights for the month, keyed by date string
+        $dailyInsights = DailyInsight::where('user_id', $user->id)
+            ->whereBetween('date', [$startDate, $endDate])
+            ->get()
+            ->keyBy(function ($item) {
+                return $item->date->toDateString();
+            });
+        
         // Get all active metrics grouped by active categories
         $categoriesWithMetrics = MetricCategory::active()
             ->ordered()
@@ -55,6 +64,7 @@ class ChronicleController extends Controller
         
         return view('chronicle.index', [
             'dayEntries' => $dayEntries,
+            'dailyInsights' => $dailyInsights,
             'categoriesWithMetrics' => $categoriesWithMetrics,
             'month' => $month,
             'monthString' => $month->format('Y-m'),

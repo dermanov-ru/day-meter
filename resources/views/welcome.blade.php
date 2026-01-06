@@ -742,6 +742,35 @@
                     <div class="visual-box">💬</div>
                 </div>
             </div>
+
+            <div class="two-column" style="margin-top: 3rem;">
+                <div class="column-text">
+                    <h3>📌 Вывод дня — ключевая мысль</h3>
+                    <p>Отделите главное от суеты. Каждый день — одна осознанная идея:</p>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Одна важная мысль за день (до 500 символов)</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Осознание, вывод или вдохновляющая цитата</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Отделено от описания событий — фокус на смыслах</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Видно в хронике жизни как отдельный слой</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1.5rem;"><strong>Через год вы увидите не просто дни, а эволюцию вашего мышления.</strong> Ваши выводы за год — это карта развития.</p>
+                </div>
+                <div class="column-visual">
+                    <div class="visual-box">🧠</div>
+                </div>
+            </div>
         </div>
     </section>
 

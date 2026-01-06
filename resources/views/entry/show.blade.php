@@ -136,6 +136,23 @@
                             @endforeach
                         </div>
 
+                        <!-- Daily Insight Section -->
+                        <div class="mt-8 pt-8 border-t border-gray-200">
+                            <label for="daily_insight" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ __('📌 Вывод дня') }}
+                            </label>
+                            <textarea name="daily_insight"
+                                      id="daily_insight"
+                                      rows="3"
+                                      maxlength="500"
+                                      placeholder="{{ __('Одна важная мысль, которую стоит запомнить') }}"
+                                      class="block w-full rounded-md border-gray-300 shadow-sm">{{ $dailyInsight->text ?? '' }}</textarea>
+                            <p class="text-xs text-gray-500 mt-1">{{ __('Макс. 500 символов') }}</p>
+                            @error('daily_insight')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <!-- Main Day Note Section -->
                         <div class="mt-8 pt-8 border-t border-gray-200">
                             <label for="day_note" class="block text-sm font-medium text-gray-700 mb-2">

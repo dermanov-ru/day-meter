@@ -69,6 +69,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the user's daily insights.
+     */
+    public function dailyInsights(): HasMany
+    {
+        return $this->hasMany(DailyInsight::class);
+    }
+
+    /**
      * Get the user's push subscriptions.
      */
     public function pushSubscriptions(): HasMany

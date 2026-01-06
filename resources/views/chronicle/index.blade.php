@@ -47,6 +47,18 @@
                                     </div>
                                 @endif
 
+                                <!-- Daily Insight -->
+                                @php
+                                    $dateString = is_string($dayEntry->date) ? $dayEntry->date : $dayEntry->date->toDateString();
+                                    $insight = $dailyInsights[$dateString] ?? null;
+                                @endphp
+                                @if($insight && $insight->text)
+                                    <div class="mb-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                                        <div class="text-sm font-semibold text-amber-900 mb-2">📌 {{ __('Вывод дня') }}:</div>
+                                        <p class="text-gray-700 leading-relaxed">{{ $insight->text }}</p>
+                                    </div>
+                                @endif
+
                                 <!-- Metric Comments Grouped by Category -->
                                 @php
                                     $commentsWithMetrics = $dayEntry->values->filter(fn($v) => $v->comment)->values();
