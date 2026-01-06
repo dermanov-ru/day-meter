@@ -3,6 +3,7 @@
 use App\Http\Controllers\BiometricController;
 use App\Http\Controllers\ChronicleController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DiseaseController;
 use App\Http\Controllers\EntryController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
@@ -43,6 +44,18 @@ Route::middleware('auth')->group(function () {
     Route::post('/settings/export', [SettingsController::class, 'generateExport'])->name('settings.export.generate');
 
     Route::get('/reminders', [NotificationController::class, 'remindersPage'])->name('reminders.page');
+
+    // Health / Disease routes
+    Route::get('/health/diseases', [DiseaseController::class, 'index'])->name('diseases.index');
+    Route::get('/health/diseases/create', [DiseaseController::class, 'create'])->name('diseases.create');
+    Route::post('/health/diseases', [DiseaseController::class, 'store'])->name('diseases.store');
+    Route::get('/health/diseases/{disease}', [DiseaseController::class, 'show'])->name('diseases.show');
+    Route::get('/health/diseases/{disease}/edit', [DiseaseController::class, 'edit'])->name('diseases.edit');
+    Route::patch('/health/diseases/{disease}', [DiseaseController::class, 'update'])->name('diseases.update');
+    Route::patch('/health/diseases/{disease}/close', [DiseaseController::class, 'close'])->name('diseases.close');
+    Route::delete('/health/diseases/{disease}', [DiseaseController::class, 'destroy'])->name('diseases.destroy');
+    Route::post('/health/diseases/{disease}/notes', [DiseaseController::class, 'storeNote'])->name('diseases.notes.store');
+    Route::delete('/health/diseases/{disease}/notes/{note}', [DiseaseController::class, 'destroyNote'])->name('diseases.notes.destroy');
 
     // Notification API endpoints
     Route::post('/api/notifications/subscribe', [NotificationController::class, 'subscribe'])->name('notifications.subscribe');

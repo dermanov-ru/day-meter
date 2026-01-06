@@ -53,6 +53,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the user's diseases.
+     */
+    public function diseases(): HasMany
+    {
+        return $this->hasMany(Disease::class);
+    }
+
+    /**
      * Get the user's push subscriptions.
      */
     public function pushSubscriptions(): HasMany
