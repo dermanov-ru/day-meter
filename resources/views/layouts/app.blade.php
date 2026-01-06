@@ -89,8 +89,6 @@
                         localStorage.setItem('biometric_unlocked', 'false');
                         localStorage.removeItem('unlock_timestamp');
                         document.querySelector('.app-content-wrapper')?.classList.remove('unlocked');
-                        console.log('🔒 LOCKED:', reason);
-                        alert('🔒 App locked: ' + reason);
                     },
 
                     activity() {
@@ -147,16 +145,14 @@
                             let visibilityTimeout;
                             document.addEventListener('visibilitychange', () => {
                                 if (document.hidden && status.biometric_enabled) {
-                                    // Delay lock to avoid false positives during navigation
+                                    // Wait 2 seconds to ensure app really went to background
                                     visibilityTimeout = setTimeout(() => {
-                                        console.log('🌙 App going to background - locking');
                                         Alpine.store('appLock').lock('app went to background');
-                                    }, 500); // 500ms delay
+                                    }, 2000);
                                 } else if (!document.hidden) {
                                     // Cancel lock if page becomes visible again quickly
                                     if (visibilityTimeout) {
                                         clearTimeout(visibilityTimeout);
-                                        console.log('✅ Cancelled background lock - page visible again');
                                     }
                                 }
                             });
@@ -165,11 +161,10 @@
                             let blurTimeout;
                             window.addEventListener('blur', () => {
                                 if (status.biometric_enabled) {
-                                    // Delay lock to avoid false positives during navigation
+                                    // Wait 2 seconds to ensure window really lost focus
                                     blurTimeout = setTimeout(() => {
-                                        console.log('🌫️ Window lost focus - locking');
                                         Alpine.store('appLock').lock('window lost focus');
-                                    }, 500); // 500ms delay
+                                    }, 2000);
                                 }
                             });
                             
@@ -177,7 +172,6 @@
                                 // Cancel lock if window gets focus back quickly
                                 if (blurTimeout) {
                                     clearTimeout(blurTimeout);
-                                    console.log('✅ Cancelled focus lock - window focused again');
                                 }
                             });
                             
