@@ -32,6 +32,9 @@
                     <x-nav-link :href="route('diseases.index')" :active="request()->routeIs('diseases.*')">
                         {{ __('Здоровье') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('activities.index')" :active="request()->routeIs('activities.*')">
+                        {{ __('Культура') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('settings.metrics')" :active="request()->routeIs('settings.*')">
                         {{ __('Настройки') }}
                     </x-nav-link>
@@ -107,6 +110,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('diseases.index')" :active="request()->routeIs('diseases.*')">
                 {{ __('Здоровье') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('activities.index')" :active="request()->routeIs('activities.*')">
+                {{ __('Культура') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('settings.metrics')" :active="request()->routeIs('settings.*')">
                 {{ __('Настройки') }}

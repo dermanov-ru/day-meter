@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BiometricController;
 use App\Http\Controllers\ChronicleController;
+use App\Http\Controllers\CulturalActivityController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DiseaseController;
 use App\Http\Controllers\EntryController;
@@ -56,6 +57,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/health/diseases/{disease}', [DiseaseController::class, 'destroy'])->name('diseases.destroy');
     Route::post('/health/diseases/{disease}/notes', [DiseaseController::class, 'storeNote'])->name('diseases.notes.store');
     Route::delete('/health/diseases/{disease}/notes/{note}', [DiseaseController::class, 'destroyNote'])->name('diseases.notes.destroy');
+
+    // Culture / Cultural Activities routes
+    Route::get('/culture/activities', [CulturalActivityController::class, 'index'])->name('activities.index');
+    Route::get('/culture/activities/create', [CulturalActivityController::class, 'create'])->name('activities.create');
+    Route::post('/culture/activities', [CulturalActivityController::class, 'store'])->name('activities.store');
+    Route::get('/culture/activities/{culturalActivity}', [CulturalActivityController::class, 'show'])->name('activities.show');
+    Route::get('/culture/activities/{culturalActivity}/edit', [CulturalActivityController::class, 'edit'])->name('activities.edit');
+    Route::patch('/culture/activities/{culturalActivity}', [CulturalActivityController::class, 'update'])->name('activities.update');
+    Route::delete('/culture/activities/{culturalActivity}', [CulturalActivityController::class, 'destroy'])->name('activities.destroy');
 
     // Notification API endpoints
     Route::post('/api/notifications/subscribe', [NotificationController::class, 'subscribe'])->name('notifications.subscribe');

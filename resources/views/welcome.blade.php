@@ -730,6 +730,92 @@
         </div>
     </section>
 
+    <!-- Культурная жизнь -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Культурная жизнь как хроника</h2>
+            <p class="section-subtitle">Фиксируйте свое культурное потребление — от книг до концертов</p>
+
+            <div class="two-column">
+                <div class="column-text">
+                    <h3>📚 Два режима времени</h3>
+                    <p>DayMeter различает два типа культурных событий — это важно:</p>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Мгновенные события</strong> (фильм в кино, концерт, спектакль) — фиксируются с точной датой и временем</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Протяжённые процессы</strong> (книга, сериал) — от даты начала до завершения</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1.5rem;">Это даёт правильное ощущение: концерт — событие, а прочитанная книга — процесс жизни.</p>
+                </div>
+                <div class="column-visual">
+                    <div class="visual-box">🎭</div>
+                </div>
+            </div>
+
+            <div class="two-column reverse" style="margin-top: 3rem;">
+                <div class="column-text">
+                    <h3>🎬 Что можно отслеживать</h3>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Фильмы</strong> — в кинотеатре или онлайн</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Книги</strong> — бумажные, электронные или аудиокниги</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Сериалы</strong> — смотрите на стриминге или слушаете аудиокниги</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text"><strong>Театр и живая музыка</strong> — спектакли, концерты, оперы</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1.5rem;">Каждая активность может иметь свой формат — от кинотеатра до стриминга.</p>
+                </div>
+                <div class="column-visual">
+                    <div class="visual-box">🎬📚🎵</div>
+                </div>
+            </div>
+
+            <div class="two-column" style="margin-top: 3rem;">
+                <div class="column-text">
+                    <h3>💭 Впечатления и оценки</h3>
+                    <p>Фиксируйте свою реакцию на культурное потребление:</p>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Оценка от 0 до 10 (как вам понравилось)</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Свободные впечатления (чем вас зацепило, что не понравилось)</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet">✓</div>
+                            <div class="feature-text">Дата завершения для длительных активностей (когда закончили читать)</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1.5rem;"><strong>Со временем вы увидите:</strong> какой жанр вам нравится, когда вы больше читаете или смотрите, как меняются ваши вкусы.</p>
+                </div>
+                <div class="column-visual">
+                    <div class="visual-box">⭐</div>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 3rem;">
+                <p>Культурные активности ложатся в единую хронику жизни. Вы сможете читать свою историю: "В июне читал Достоевского, смотрел три фильма, ходил на концерт". Это не просто список книг — это <strong>жизнь, записанная в контексте.</strong></p>
+            </div>
+        </div>
+    </section>
+
     <!-- Удобный ввод -->
     <section class="section">
         <div class="container">

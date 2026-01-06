@@ -61,6 +61,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the user's cultural activities.
+     */
+    public function culturalActivities(): HasMany
+    {
+        return $this->hasMany(CulturalActivity::class);
+    }
+
+    /**
      * Get the user's push subscriptions.
      */
     public function pushSubscriptions(): HasMany
