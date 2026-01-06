@@ -89,6 +89,19 @@
                 Biometric unlock lets you quickly access your account using your device's fingerprint or face recognition. Your biometric data never leaves your device—it's used only for local authentication.
             </p>
         </div>
+
+        <!-- Testing Section -->
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+            <p class="text-sm text-gray-600 mb-3">
+                <strong>Testing & Development</strong>
+            </p>
+            <button @click="resetSetupModal()" class="text-sm text-blue-600 hover:text-blue-700 underline">
+                Show setup prompt again
+            </button>
+            <p class="text-xs text-gray-500 mt-2">
+                This will show the biometric setup modal on next page load
+            </p>
+        </div>
     </div>
 </div>
 
@@ -186,6 +199,13 @@
                 } finally {
                     this.isLoading = false;
                 }
+            },
+
+            resetSetupModal() {
+                // Clear the flag so setup modal shows again
+                localStorage.removeItem('biometric_setup_dismissed');
+                this.message = 'Setup prompt will show on next page load';
+                this.messageType = 'success';
             }
         };
     }
