@@ -172,12 +172,14 @@ git commit -m "Descriptive commit message
 - Bullet point 1
 - Bullet point 2
 
-Co-Authored-By: Warp <agent@warp.dev>"
+"
 ```
 
 Always include:
 - Descriptive title
 - Bullet points explaining changes
+
+Do not include:
 - Co-author line at the end
 
 ### 3. Deploy to Production
