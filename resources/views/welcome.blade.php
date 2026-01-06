@@ -3,6 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DayMeter — приватный сервис осознанного трекинга жизни. Отслеживайте состояние, здоровье и культурное потребление. Экспортируйте данные для анализа ИИ. Без геймификации.">
+    <meta name="keywords" content="трекер жизни, дневник здоровья, отслеживание привычек, личный журнал, самоанализ, health tracking, life logging">
+    <meta name="author" content="Mark Dermanov">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="DayMeter - Личный сервис осознанного трекинга жизни">
+    <meta property="og:description" content="Отслеживайте состояние, здоровье и культурную жизнь. Анализируйте данные с помощью ИИ. Полностью приватно.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://day-meter.dermanov.ru">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="DayMeter - Осознанный трекинг жизни">
+    <meta name="twitter:description" content="Приватный сервис для ежедневной фиксации жизни и анализа данных.">
+    <link rel="canonical" href="https://day-meter.dermanov.ru">
     <title>DayMeter - Личный сервис осознанного трекинга жизни</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
@@ -594,6 +606,7 @@
             }
         }
     </style>
+    <x-schema-org />
 </head>
 <body>
     <!-- Navbar -->
