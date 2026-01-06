@@ -144,19 +144,40 @@
                             document.addEventListener('keypress', () => Alpine.store('appLock').activity());
 
                             // Handle page visibility change (lock when going to background)
+                            let visibilityTimeout;
                             document.addEventListener('visibilitychange', () => {
                                 if (document.hidden && status.biometric_enabled) {
-                                    console.log('🌙 App going to background - locking');
-                                    Alpine.store('appLock').lock('app went to background');
+                                    // Delay lock to avoid false positives during navigation
+                                    visibilityTimeout = setTimeout(() => {
+                                        console.log('🌙 App going to background - locking');
+                                        Alpine.store('appLock').lock('app went to background');
+                                    }, 500); // 500ms delay
+                                } else if (!document.hidden) {
+                                    // Cancel lock if page becomes visible again quickly
+                                    if (visibilityTimeout) {
+                                        clearTimeout(visibilityTimeout);
+                                        console.log('✅ Cancelled background lock - page visible again');
+                                    }
                                 }
-                                // Don't unlock on visibility return - user must use biometric
                             });
                             
                             // Handle tab/window focus change
+                            let blurTimeout;
                             window.addEventListener('blur', () => {
                                 if (status.biometric_enabled) {
-                                    console.log('🌫️ Window lost focus - locking');
-                                    Alpine.store('appLock').lock('window lost focus');
+                                    // Delay lock to avoid false positives during navigation
+                                    blurTimeout = setTimeout(() => {
+                                        console.log('🌫️ Window lost focus - locking');
+                                        Alpine.store('appLock').lock('window lost focus');
+                                    }, 500); // 500ms delay
+                                }
+                            });
+                            
+                            window.addEventListener('focus', () => {
+                                // Cancel lock if window gets focus back quickly
+                                if (blurTimeout) {
+                                    clearTimeout(blurTimeout);
+                                    console.log('✅ Cancelled focus lock - window focused again');
                                 }
                             });
                             
