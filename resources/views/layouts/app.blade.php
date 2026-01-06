@@ -24,6 +24,14 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased" x-data="appInitializer()" x-init="init()">
+        <script>
+            // Check lock state BEFORE Alpine initializes to prevent content flash
+            if (localStorage.getItem('app_lock_state') === 'locked') {
+                document.documentElement.style.overflow = 'hidden';
+                document.body.style.overflow = 'hidden';
+            }
+        </script>
+        
         <!-- App Lock Overlay -->
         @include('components.app-lock')
 
@@ -60,8 +68,12 @@
         <script>
             // Initialize Alpine store for app lock
             document.addEventListener('alpine:init', () => {
+                // Check if app should be locked from previous session
+                const lockState = localStorage.getItem('app_lock_state');
+                const shouldBeLocked = lockState === 'locked';
+                
                 Alpine.store('appLock', {
-                    isLocked: false,
+                    isLocked: shouldBeLocked,
                     lastActivity: Date.now(),
                     inactivityTimeout: 30 * 60 * 1000, // 30 minutes
 

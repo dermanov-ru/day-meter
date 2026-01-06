@@ -49,7 +49,7 @@
 <script>
     function appLockComponent() {
         return {
-            isLocked: Alpine.store('appLock').isLocked,
+            isLocked: localStorage.getItem('app_lock_state') === 'locked',
             isLoading: false,
             message: '',
             messageType: 'info',
@@ -58,6 +58,9 @@
                 // Clear any previous messages on init
                 this.message = '';
                 this.messageType = 'info';
+                
+                // Sync with store
+                this.isLocked = localStorage.getItem('app_lock_state') === 'locked';
                 
                 // Subscribe to app lock store changes
                 this.$watch('$store.appLock.isLocked', (value) => {
