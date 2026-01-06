@@ -58,10 +58,10 @@
                 // Clear any previous messages on init
                 this.message = '';
                 this.messageType = 'info';
-                
+
                 // Start locked, will be unlocked by app initializer if needed
-                this.isLocked = true;
-                
+                this.isLocked = false;
+
                 // Subscribe to app lock store changes
                 this.$watch('$store.appLock.isLocked', (value) => {
                     this.isLocked = value;
@@ -77,11 +77,11 @@
                         throw new Error('Biometric service not available');
                     }
                     await window.biometricService.unlock();
-                    
+
                     // Mark as unlocked
                     Alpine.store('appLock').unlock();
                     this.isLocked = false;
-                    
+
                     this.message = 'Unlocked successfully!';
                     this.messageType = 'success';
                 } catch (error) {
