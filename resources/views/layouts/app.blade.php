@@ -68,7 +68,7 @@
             // Initialize Alpine store for app lock
             document.addEventListener('alpine:init', () => {
                 Alpine.store('appLock', {
-                    isLocked: true, // Always start locked to prevent content flash
+                    isLocked: false, // Always start locked to prevent content flash
                     lastActivity: Date.now(),
                     inactivityTimeout: 30 * 60 * 1000, // 30 minutes
                     lockReason: '', // For debugging

@@ -49,7 +49,7 @@
 <script>
     function appLockComponent() {
         return {
-            isLocked: true, // Always start locked to prevent content flash
+            isLocked: false, // Always start locked to prevent content flash
             isLoading: false,
             message: '',
             messageType: 'info',
