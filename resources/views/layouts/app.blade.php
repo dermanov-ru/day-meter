@@ -114,14 +114,14 @@
                             const isFromSameDomain = document.referrer && document.referrer.startsWith(window.location.origin);
                             const isPageRefresh = !document.referrer || document.referrer === window.location.href;
                             
-                            // Unlock if:
+                            // Unlock only if:
                             // 1. Biometric is not enabled, OR
-                            // 2. Navigation within the same app (same domain), OR  
-                            // 3. Page refresh and we weren't previously locked
-                            if (!status.biometric_enabled || isFromSameDomain || (isPageRefresh && !wasLocked)) {
+                            // 2. Navigation within the same app (same domain) AND not a page refresh
+                            if (!status.biometric_enabled || (isFromSameDomain && !isPageRefresh)) {
                                 // Unlock immediately - no biometric needed
                                 Alpine.store('appLock').unlock();
                             }
+                            // For page refresh (pull-to-refresh) - always require biometric if enabled
 
                             // Track activity
                             document.addEventListener('click', () => Alpine.store('appLock').activity());

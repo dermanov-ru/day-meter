@@ -160,7 +160,7 @@ Standard workflow for changes:
 
 ### 1. Build Frontend Assets
 ```bash
-npm run build
+./vendor/bin/sail npm run build
 ```
 Compiles CSS and JavaScript using Vite. Required before committing any UI/style changes.
 
@@ -199,7 +199,7 @@ Note: The deployment script uses remote SSH connection to production server. It 
 ```bash
 # 1. Make changes to code
 # 2. Build frontend
-npm run build
+./vendor/bin/sail npm run build
 
 # 3. Commit with message
 git add -A
