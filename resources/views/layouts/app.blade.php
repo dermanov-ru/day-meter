@@ -24,13 +24,12 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased" x-data="appInitializer()" x-init="init()">
-        <script>
-            // Check lock state BEFORE Alpine initializes to prevent content flash
-            if (localStorage.getItem('app_lock_state') === 'locked') {
-                document.documentElement.style.overflow = 'hidden';
-                document.body.style.overflow = 'hidden';
-            }
-        </script>
+        <style>
+            /* Always show lock screen first to prevent content flash */
+            .app-lock-wrapper { z-index: 999 !important; }
+            .app-content-wrapper { opacity: 0; transition: opacity 0.3s; }
+            .app-content-wrapper.unlocked { opacity: 1; }
+        </style>
         
         <!-- App Lock Overlay -->
         @include('components.app-lock')
@@ -38,7 +37,7 @@
         <!-- Biometric Setup Prompt -->
         @include('components.biometric-setup')
 
-        <div class="min-h-screen bg-gray-100">
+        <div class="app-content-wrapper min-h-screen bg-gray-100">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -68,12 +67,8 @@
         <script>
             // Initialize Alpine store for app lock
             document.addEventListener('alpine:init', () => {
-                // Check if app should be locked from previous session
-                const lockState = localStorage.getItem('app_lock_state');
-                const shouldBeLocked = lockState === 'locked';
-                
                 Alpine.store('appLock', {
-                    isLocked: shouldBeLocked,
+                    isLocked: true, // Always start locked to prevent content flash
                     lastActivity: Date.now(),
                     inactivityTimeout: 30 * 60 * 1000, // 30 minutes
 
@@ -81,11 +76,13 @@
                         this.isLocked = false;
                         this.lastActivity = Date.now();
                         localStorage.setItem('app_lock_state', 'unlocked');
+                        document.querySelector('.app-content-wrapper')?.classList.add('unlocked');
                     },
 
                     lock() {
                         this.isLocked = true;
                         localStorage.setItem('app_lock_state', 'locked');
+                        document.querySelector('.app-content-wrapper')?.classList.remove('unlocked');
                     },
 
                     activity() {
@@ -107,14 +104,20 @@
                             }
                         });
 
-                        // Check biometric status
+                        // Check biometric status and determine if lock is needed
                         try {
                             const response = await fetch('/api/biometric/status');
                             const status = await response.json();
                             
-                            // DON'T lock on initial page load
-                            // User is already authenticated with session
-                            // Lock only on visibility change (background return)
+                            // Check if we need to show biometric lock
+                            const isPageRefresh = !document.referrer || document.referrer === window.location.href;
+                            const wasLocked = localStorage.getItem('app_lock_state') === 'locked';
+                            
+                            // If biometric is not enabled, or this is just a page refresh and we weren't locked
+                            if (!status.biometric_enabled || (isPageRefresh && !wasLocked)) {
+                                // Unlock immediately - no biometric needed
+                                Alpine.store('appLock').unlock();
+                            }
 
                             // Track activity
                             document.addEventListener('click', () => Alpine.store('appLock').activity());

@@ -49,7 +49,7 @@
 <script>
     function appLockComponent() {
         return {
-            isLocked: localStorage.getItem('app_lock_state') === 'locked',
+            isLocked: true, // Always start locked to prevent content flash
             isLoading: false,
             message: '',
             messageType: 'info',
@@ -59,8 +59,8 @@
                 this.message = '';
                 this.messageType = 'info';
                 
-                // Sync with store
-                this.isLocked = localStorage.getItem('app_lock_state') === 'locked';
+                // Start locked, will be unlocked by app initializer if needed
+                this.isLocked = true;
                 
                 // Subscribe to app lock store changes
                 this.$watch('$store.appLock.isLocked', (value) => {
