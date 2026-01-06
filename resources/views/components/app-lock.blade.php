@@ -62,6 +62,10 @@
             messageType: 'info',
 
             init() {
+                // Clear any previous messages on init
+                this.message = '';
+                this.messageType = 'info';
+                
                 // Subscribe to app lock store changes
                 this.$watch('$store.appLock.isLocked', (value) => {
                     this.isLocked = value;
